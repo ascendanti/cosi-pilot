@@ -201,24 +201,34 @@ choice explicit; we recognize it is contestable.
 
 \subsection*{Closing Note}
 
-The pilot is what it is: a representational-alignment result against
-the row-permutation null, with the gaps to the strong claim explicitly
-catalogued, four follow-up control studies (A, B/B2/B3, C, F-CKA) run
-and reported, and the remaining program (D and E) specified.
-The methodologically decisive controls --- Study B1, Study B2, and the
-cross-validated Study B3 --- show that the pilot's headline numbers
-are dominated by shared lexical and template encoding rather than by
-substrate-shared computation. The cross-validated CKA collapse from
-$0.84$--$0.96$ to $0.35$--$0.59$ on held-out residuals is the honest
-version of what the original Procrustes-against-row-permutation-null
-test was actually measuring. The most defensible publishable claim
-of the present paper is therefore methodological: $z$-scores against
-row-permutation nulls in cross-model representation tests do not
-licence operator-theoretic, mechanistic, or compositional-reasoning
-interpretations unless lexical structure is explicitly controlled
-and the controls are themselves cross-validated. The operator-theoretic
-COSI program remains a motivated research agenda; the present pilot
-does not advance its strong claim. The next decisive step is Study D
-(training-distribution-disjoint control), which alone could
-discriminate whether the surviving residualized cross-model signal
-is substrate-independent or shared-corpus residue.
+The pilot is a representational-alignment result against a
+row-permutation null, followed by a sequence of controls that
+materially revise one another. Study B1 shows that lexical and
+template baselines can match or exceed the raw LLM--LLM Procrustes
+alignment. Study B2 shows that in-sample lexical residualization
+removes most apparent similarity, but Study B3 shows this estimate
+is inflated by overfitting, and Study B4 shows that random-split
+residualization leaks template-family structure: under grouped
+template/domain holdouts, TF-IDF/template residualization fails to
+generalize and leaves much of the cross-model similarity intact.
+
+The paper's defensible contribution is methodological. Cross-model
+activation-alignment claims require a hierarchy of controls
+(row-permutation null, lexical baseline, in-sample residualization,
+random-split cross-validation, grouped cross-validation by template
+family and by domain, and ideally domain-general lexical
+featurization that itself generalizes across templates) before any
+mechanistic, compositional, or operator-theoretic interpretation is
+licensed. The COSI program remains a motivated research agenda. The
+present pilot neither confirms nor refutes its strong claim; it
+shows that the standard methodology is too underdetermined to do
+either.
+
+Three follow-ups would be decisive. Stronger lexical featurization
+(Study B5: subword tokenizer counts, large-corpus character $n$-grams,
+pre-trained sentence encoders --- features that should survive grouped
+template holdout). Training-distribution-disjoint controls (Study D).
+Cross-model causal intervention (Study E). None alone is sufficient.
+The discipline of running them in sequence and watching each control
+change the previous step's interpretation is itself part of the
+contribution.

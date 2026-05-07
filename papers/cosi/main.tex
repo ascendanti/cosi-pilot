@@ -42,8 +42,8 @@
 \DeclareMathOperator{\Tr}{Tr}
 
 \title{
-Cross-Model Activation Alignment Does Not Exceed Lexical Baselines: \\
-\large A Representational-Geometry Pilot for Operator-Theoretic Interpretability
+Row-Permutation Nulls Are Not Enough: \\
+\large Lexical and Grouped Controls for Cross-Model Activation Alignment
 }
 
 \author{
@@ -56,63 +56,43 @@ Cross-Model Activation Alignment Does Not Exceed Lexical Baselines: \\
 \maketitle
 
 \begin{abstract}
-We propose an operator-theoretic framing of the mechanistic
-interpretability literature's empirical regularity that sparse
-autoencoders recover monosemantic feature dictionaries from trained
-transformers: that these features are concrete realizations of
-approximately invariant subspaces of the nonlinear forward operator.
-From the framing we derive the \emph{Cross-Operator Subspace
-Isomorphism} (COSI) program, whose strong claim is that compositional
-reasoning subspaces are isomorphic across sufficiently different
-architectures. We test the test --- and the test fails the controls.
-We report a pre-registered pilot in which Procrustes alignment of
-PCA-projected last-token activation matrices, between architecturally
-different frontier transformers (Phi-4-Reasoning-Plus dense
-pure-attention vs.\ Qwen3-Next-80B-A3B-Thinking hybrid attention/SSM)
-on matched compositional-evaluation prompts, produces residuals far
-below a row-permutation null (empirical $p < 0.001$ in every cell;
-descriptive $z$ in the $-89\sigma$ to $-101\sigma$ range; CKA
-$0.84$--$0.96$). Train/test Procrustes splits show the alignment is
-not a same-data fit artifact. Invariance-leakage measurement shows
-the PCA subspaces are partially invariant under the forward operator,
-more invariant than random subspaces but with absolute leakage
-$0.51$--$0.89$. The lexical-baseline control reveals the methodologically
-decisive result: a TF-IDF vs.\ template-only Procrustes alignment of
-the same prompts achieves a \emph{lower} residual ($0.61$) than the
-LLM--LLM pair ($0.77$), and one of the LLMs aligns to TF-IDF
-($0.76$) at essentially the same residual as it aligns to the other
-LLM. The lexical-residual control was run in three increasingly strict
-forms: in-sample (Study B2), random-split cross-validated
-(Study B3), and grouped cross-validated (Study B4) by template
-family and by domain. The in-sample residualization removed
-$94$--$97\%$ of raw activation variance (summed over all hidden
-dimensions) and collapsed CKA from $0.84$--$0.96$ to $0.21$--$0.39$;
-the random-split version moderated this to $72$--$88\%$ variance
-removed and CKA $\to 0.35$--$0.59$ on held-out rows. \textbf{The
-grouped cross-validation reveals that this residualization effect is
-substantially template-specific: under leave-one-template-family-out,
-the lexical regression fits on $27$ template families fail to
-generalize to the held-out family ($\Delta_\text{CKA} = -0.006$ to
-$+0.019$, essentially zero), and under leave-one-domain-out the
-regression makes worse-than-mean predictions on the held-out domain.}
-The cross-model representational similarity that survives a
-properly grouped lexical control is much larger than the random-split
-controls indicated. The compound methodological lesson is stronger
-than any single-study version would have been: row-permutation
-nulls are insufficient, lexical baselines are required (Study B1),
-in-sample residualization overstates the effect (B1 vs. B3),
-random-split residualization leaks template structure (B3 vs.\ B4),
-and TF-IDF/template-only features themselves do not generalize
-across template families well enough to support clean residualization
-on held-out templates. A non-trivial cross-model signal survives
-even the strictest controls available here, but its operator-theoretic
-interpretation cannot be discriminated from training-distribution
-residue or deeper syntactic structure by these controls alone. The most defensible contribution of this paper is
-methodological: $z$-scores against row-permutation nulls are
-insufficient evidence for operator-theoretic or compositional-reasoning
-subspace claims unless lexical structure is explicitly controlled.
-The operator-theoretic COSI program remains a motivated research
-agenda; the pilot does not advance its strong claim.
+Cross-model activation alignment under a row-permutation null can
+look overwhelmingly significant. In a pre-registered pilot,
+Procrustes alignment of PCA-projected last-token activation
+matrices between architecturally different frontier transformers
+(Phi-4-Reasoning-Plus, dense attention; Qwen3-Next-80B-A3B-Thinking,
+hybrid attention/state-space) on matched compositional-evaluation
+prompts produces residuals far below the permutation null at every
+pre-registered cell (empirical $p < 0.001$, descriptive $z$ from
+$-89$ to $-101$, linear CKA $0.84$ to $0.96$). The remainder of the
+paper is a measurement-validity study showing that the conclusion
+one draws from such results depends critically on the control
+hierarchy. Lexical and template-only baselines (Study B1) match or
+exceed the LLM--LLM Procrustes residual on the same prompts.
+In-sample lexical residualization (B2) appears to remove $94$ to
+$97\%$ of activation variance and collapse CKA to $0.21$ to $0.39$.
+Cross-validated random-split residualization (B3) moderates this to
+$72$ to $88\%$ variance removed and CKA to $0.35$ to $0.59$,
+exposing the in-sample overfitting. Grouped cross-validation (B4)
+by template family and by domain shows the lexical regression
+itself does not generalize: under leave-one-template-family-out,
+$\Delta_\text{CKA}$ is essentially zero ($-0.006$ to $+0.019$);
+under leave-one-domain-out, the regression makes worse-than-mean
+predictions on the held-out domain. The cross-model alignment is
+far more robust to a properly grouped lexical control than the
+random-split version indicated, but B4 also shows that simple
+TF-IDF and template-only features are too weak to function as clean
+lexical controls under grouped holdout. The surviving signal cannot
+be concluded non-lexical from these controls alone. The
+contribution is methodological. Claims about cross-model
+representational structure require a hierarchy of controls: a
+row-permutation null, a lexical baseline, in-sample residualization,
+random-split cross-validation, grouped cross-validation by template
+family and by domain, and stronger lexical featurization that
+survives grouped holdout. Each step in the hierarchy materially
+changes what the previous step appeared to mean. Code, data,
+experimental runs, and the pre-registration packet are released at
+\url{https://github.com/ascendanti/cosi-pilot}.
 \end{abstract}
 
 \input{sections/intro}
