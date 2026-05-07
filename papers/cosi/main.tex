@@ -47,9 +47,7 @@ Cross-Model Activation Alignment Does Not Exceed Lexical Baselines: \\
 }
 
 \author{
-  Adam A. Bensaid\thanks{Atlas Consulting \& Technology Services, Toronto, ON. Correspondence: \texttt{adam.a.bensaid@gmail.com}.} \\
-  \and
-  Claude (Anthropic)\thanks{Sonnet 4.5 / Opus 4.6 instances, accessed via Claude Code over the period 2026-04 to 2026-05. Authorial contribution: experimental design, code, draft prose. Final responsibility for all claims rests with the corresponding human author.}
+  Adam A. Bensaid\thanks{Atlas Consulting \& Technology Services, Toronto, ON. Correspondence: \texttt{adam.a.bensaid@gmail.com}.}
 }
 
 \date{\today}
@@ -83,26 +81,31 @@ decisive result: a TF-IDF vs.\ template-only Procrustes alignment of
 the same prompts achieves a \emph{lower} residual ($0.61$) than the
 LLM--LLM pair ($0.77$), and one of the LLMs aligns to TF-IDF
 ($0.76$) at essentially the same residual as it aligns to the other
-LLM. The lexical-residual control --- in its cross-validated form
-(50 random $70$/$30$ splits, ridge regression fit on training rows,
-metrics computed on held-out rows) --- shows that $455$ TF-IDF and
-template-only features explain $72$--$88\%$ of the held-out
-\emph{raw activation variance} (summed over all hidden dimensions,
-not the PCA-projected subspace) at every layer in both models.
-After cross-validated lexical residualization, held-out linear CKA
-collapses from $0.84$--$0.96$ to $0.35$--$0.59$ ($\Delta_\text{CKA} =
--0.37$ to $-0.49$). The in-sample residualization
-($94$--$97\%$ variance removed, CKA $\to 0.21$--$0.39$) overstated
-the magnitude of the effect by approximately $10$--$25\%$ depending on
-layer and metric, but the qualitative finding survives the
-cross-validation: \textbf{a substantial majority of the apparent
-cross-model representational similarity at these layers is shared
-lexical and template encoding, not substrate-shared computation.
-The row-permutation null is too weak a baseline for cross-model
-Procrustes/CKA tests on language-model activations.} A non-trivial
-cross-model signal does survive cross-validated lexical
-residualization (residualized CKA $0.35$--$0.59$ on held-out, well
-above the permutation null), but its operator-theoretic
+LLM. The lexical-residual control was run in three increasingly strict
+forms: in-sample (Study B2), random-split cross-validated
+(Study B3), and grouped cross-validated (Study B4) by template
+family and by domain. The in-sample residualization removed
+$94$--$97\%$ of raw activation variance (summed over all hidden
+dimensions) and collapsed CKA from $0.84$--$0.96$ to $0.21$--$0.39$;
+the random-split version moderated this to $72$--$88\%$ variance
+removed and CKA $\to 0.35$--$0.59$ on held-out rows. \textbf{The
+grouped cross-validation reveals that this residualization effect is
+substantially template-specific: under leave-one-template-family-out,
+the lexical regression fits on $27$ template families fail to
+generalize to the held-out family ($\Delta_\text{CKA} = -0.006$ to
+$+0.019$, essentially zero), and under leave-one-domain-out the
+regression makes worse-than-mean predictions on the held-out domain.}
+The cross-model representational similarity that survives a
+properly grouped lexical control is much larger than the random-split
+controls indicated. The compound methodological lesson is stronger
+than any single-study version would have been: row-permutation
+nulls are insufficient, lexical baselines are required (Study B1),
+in-sample residualization overstates the effect (B1 vs. B3),
+random-split residualization leaks template structure (B3 vs.\ B4),
+and TF-IDF/template-only features themselves do not generalize
+across template families well enough to support clean residualization
+on held-out templates. A non-trivial cross-model signal survives
+even the strictest controls available here, but its operator-theoretic
 interpretation cannot be discriminated from training-distribution
 residue or deeper syntactic structure by these controls alone. The most defensible contribution of this paper is
 methodological: $z$-scores against row-permutation nulls are
@@ -125,17 +128,15 @@ agenda; the pilot does not advance its strong claim.
 
 \section*{Acknowledgments}
 
-This work was carried out in extended dialogue between the human author
-and the language model co-author over the period 2026-04 through 2026-05,
-as part of the broader research program of Atlas Consulting \&
-Technology Services. The infrastructure used to run the experiment---a
-Mac Studio (M1 Ultra, 64\,GB unified memory) running MLX-quantized
-inference under the Sovereign multi-agent harness---was developed
-without external funding. Models were obtained from the
-\texttt{mlx-community} hub on HuggingFace; we thank the maintainers for
-the quantization and conversion work that made local frontier-model
-experimentation tractable. The authors thank the many contributors to
-the open-source mechanistic interpretability community whose work, even
+This work was carried out as part of the research program of Atlas
+Consulting \& Technology Services. The infrastructure used to run the
+experiments --- a Mac Studio (M1 Ultra, 64\,GB unified memory) running
+MLX-quantized inference under the Sovereign multi-agent harness --- was
+developed without external funding. Models were obtained from the
+\texttt{mlx-community} hub on HuggingFace; thanks to the maintainers
+for the quantization and conversion work that made local frontier-model
+experimentation tractable. Thanks to the many contributors to the
+open-source mechanistic interpretability community whose work, even
 when not directly cited, shaped the framing of the hypothesis.
 
 \printbibliography

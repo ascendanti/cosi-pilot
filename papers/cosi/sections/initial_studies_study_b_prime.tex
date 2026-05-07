@@ -1,9 +1,9 @@
-\subsection{Study B' — Lexical-Residual Alignment}
+\subsection{Study B2 — Lexical-Residual Alignment}
 \label{sec:results-study-b-prime}
 
 Study B established that the LLM--LLM Procrustes residual does not
 exceed what lexical/template baselines achieve on the same prompts.
-Study B' is the direct follow-up: if we explicitly residualize
+Study B2 is the direct follow-up: if we explicitly residualize
 lexical and template structure out of each LLM's activations and
 re-run the alignment on the residuals, does any cross-model signal
 survive? This is the load-bearing test of whether the pilot's
@@ -31,7 +31,7 @@ comparison.
 
 \begin{table}[h]
 \centering
-\caption{Study B' lexical-residual alignment. Lexical and template
+\caption{Study B2 lexical-residual alignment. Lexical and template
 features explain $94$--$97\%$ of LLM activation variance at every
 layer. After residualization, linear CKA \emph{collapses} from
 $0.84$--$0.96$ to $0.21$--$0.39$ (Δ$_\text{CKA}$ = $-0.57$ to
@@ -52,7 +52,7 @@ $0.75$ & $0.94$ (A), $0.95$ (B) & $0.9555$ & $0.9771$ & $+0.0215$ & $0.8427$ & $
 \end{tabular}
 \end{table}
 
-\paragraph{What Study B' establishes.}
+\paragraph{What Study B2 establishes.}
 
 \begin{enumerate}
     \item \textbf{The LLM activations are largely predictable from
@@ -88,12 +88,12 @@ $0.75$ & $0.94$ (A), $0.95$ (B) & $0.9555$ & $0.9771$ & $+0.0215$ & $0.8427$ & $
         similarity that is not zero. Whether this residual signal is
         operator-theoretic substrate, training-distribution residue,
         deeper syntactic structure, or pooling artifact cannot be
-        discriminated by Study B' alone.
+        discriminated by Study B2 alone.
 \end{enumerate}
 
 \paragraph{The methodological lesson.} The pilot's row-permutation
 Procrustes test produced $z$-scores in the $-89\sigma$ to $-101\sigma$
-range. Study B' demonstrates that those magnitudes do not licence
+range. Study B2 demonstrates that those magnitudes do not licence
 the operator-theoretic interpretation: lexical-residual control
 removes the majority of the underlying cross-model similarity. Future
 applications of this methodology to language-model representation

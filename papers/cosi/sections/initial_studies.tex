@@ -1,4 +1,4 @@
-\section{Initial Results from Studies A, B, C, and F-CKA}
+\section{Initial Results from Studies A, B1, C, and F-CKA}
 \label{sec:initialstudies}
 
 The companion to this pilot is the program of additional studies
@@ -179,6 +179,8 @@ This is a necessary follow-up; it is not performed here.
 
 \input{sections/initial_studies_study_b_double_prime}
 
+\input{sections/initial_studies_study_b4}
+
 \subsection{Study C — Train/Test Procrustes Split}
 \label{sec:results-study-c}
 
@@ -200,10 +202,15 @@ residual.
 \subsection{Joint Reading of the Initial Studies}
 \label{sec:joint-reading}
 
-Read together, the five initial studies produce a clear and
-methodologically consequential picture: the pilot's apparent
-cross-model alignment is real but is dominated by shared
-lexical/template encoding, not by substrate-shared computation.
+Read together, the six initial studies produce a more nuanced picture
+than any single one of them gives on its own. The picture, briefly:
+the pilot's apparent cross-model alignment is real; a substantial
+component of it is template-specific lexical encoding that random-split
+controls can remove; under grouped (template-out) cross-validation
+the lexical component is much smaller than random-split residualization
+indicated; and the surviving cross-model similarity remains
+substantial without licencing the strong operator-theoretic
+interpretation.
 
 The pilot result (Phases~0 and~1) and Study F-CKA agree that two
 architecturally different frontier transformers exhibit substantial
@@ -213,14 +220,31 @@ permutation null). Study C confirms this is not a same-data fit
 artifact: train/test gaps are essentially zero. So the alignment is a
 genuine property of the models on the data.
 
-But Study B shows the alignment does not exceed what simple lexical
-and template baselines achieve, and Study B' shows directly that
-$94$--$97\%$ of the LLM activation variance is predictable from
-$455$ TF-IDF and template features, and that lexical residualization
-collapses CKA from $0.84$--$0.96$ to $0.21$--$0.39$. The bulk of the
-representational similarity that the pilot's row-permutation
-Procrustes test detects is shared prompt-surface encoding, not
-substrate-shared compositional structure.
+Study B1 (lexical/template baselines) and Study B2 (in-sample lexical
+residualization) gave a strong-looking negative methodological
+finding: the LLM--LLM Procrustes residual is matched or exceeded by
+TF-IDF/template-only baselines, and $94$--$97\%$ of LLM activation
+variance is predictable from $455$ TF-IDF + template features in
+sample. Study B3 (cross-validated random-split residualization)
+moderated this finding: held-out variance removed is $72$--$88\%$
+(in-sample $94$--$97\%$ was inflated by overfitting), and the
+held-out CKA collapse is $-0.37$ to $-0.49$ (in-sample $-0.57$ to
+$-0.63$). Even after the moderation, the pilot's apparent CKA was
+substantially explained by lexical structure under random-split
+controls.
+
+Study B4 (grouped cross-validation: leave-one-template-family-out and
+leave-one-domain-out) further moderates the finding. Under LOTFO,
+$\Delta_\text{CKA}$ ranges from $-0.006$ to $+0.019$ (essentially
+zero); the lexical regression fit on $27$ template families does not
+generalize to the $28$th. Under LODO, the lexical regression makes
+worse-than-mean predictions on the held-out domain, and CKA
+\emph{increases} after residualization (an artifact of correlated
+noise from regression failure). The honest reading: the lexical
+structure that random-split residualization removed in Study B3 was
+substantially template-specific. The cross-model representational
+similarity that survives a properly grouped lexical control is much
+larger than B3 indicated.
 
 Study A independently complicates the operator-theoretic reading.
 PCA-derived candidate subspaces are partially preserved under the
@@ -235,42 +259,66 @@ reading does not predict this.
 \paragraph{The methodological finding the paper now makes.}
 
 A row-permutation null is too weak a baseline for cross-model
-Procrustes/CKA tests on language-model activations. Two competent
-language models exposed to the same prompts will produce matched-row
-activations more similar than scrambled-row activations regardless of
-any substrate-shared computation, because both encode the prompts'
-lexical and template content. Without a lexical baseline (Study B) and
-a lexical-residual control (Study B'), $z$-scores against the
-row-permutation null are uninformative for any mechanistic or
-operator-theoretic claim. The pilot's $z$-scores in the $-89\sigma$
-to $-101\sigma$ range are descriptive of the geometry but evidentially
-inadequate for the operator-theoretic interpretation.
+Procrustes/CKA tests on language-model activations. Lexical and
+template baselines (Study B1) match or exceed the LLM--LLM alignment.
+Random-split lexical residualization (Studies B2, B3) removes a
+substantial fraction of CKA, but this removal is partly
+template-specific: under grouped cross-validation by template family
+or by domain (Study B4), the same lexical residualization barely
+affects CKA, and TF-IDF + template-only featurization fails to
+generalize across template families.
 
-A residual cross-model signal does survive lexical control
-(residualized CKA $z = +67$ to $+95\sigma$ above null). Whether that
-residual signal is operator-theoretic substrate, training-distribution
-residue, deeper syntactic structure, or pooling artifact cannot be
-discriminated by the studies reported here. The operator-theoretic
-program articulated in this paper remains a research agenda. The
-pilot does not advance the strong claim; the initial controls actively
-weaken it; the residual signal after lexical control is a small but
-non-zero target for further investigation.
+The compound methodological lesson is therefore stronger than the
+single-study lesson would have been:
+
+\begin{itemize}
+    \item Row-permutation nulls are insufficient. Lexical baselines
+        (Study B1) are required.
+    \item In-sample lexical residualization (Study B2) overstates
+        the lexical contribution. Cross-validated residualization
+        (Study B3) is required.
+    \item Random-split cross-validation is insufficient. It leaks
+        template-family structure across train and test, so the
+        lexical regression captures within-template patterns that
+        do not generalize. Grouped cross-validation by template
+        family and by domain (Study B4) is required.
+    \item Bag-of-words / template TF-IDF features are themselves
+        insufficient. They do not generalize across template
+        families well enough to support clean residualization on
+        held-out templates. Future studies should use
+        domain-general lexical features (subword tokenizer counts,
+        large-corpus character $n$-grams, pre-trained sentence
+        encoders).
+\end{itemize}
+
+The cross-model representational similarity, after the chain of
+controls, is materially larger than Study B2 alone indicated. Whether
+the surviving similarity is operator-theoretic substrate,
+training-distribution residue, deeper syntactic structure, or
+artifact of the methodology itself cannot be discriminated by these
+controls alone. The operator-theoretic program remains a research
+agenda; the pilot does not advance its strong claim; the methodological
+controls produce a more nuanced rather than uniformly negative
+picture.
 
 \paragraph{What this means for the paper.} The most defensible
 contribution of this paper, after the initial studies, is no longer
 ``we found cross-architectural operator-subspace isomorphism.'' It is:
 
 \begin{quote}
-\emph{A row-permutation Procrustes test can produce extremely
-significant cross-model alignment results on frontier transformer
-activations, but lexical and template baselines can match or exceed
-those results, and explicit lexical residualization removes the
-majority of the apparent alignment. This class of representational-alignment
-evidence is therefore insufficient for operator-theoretic or
-compositional-reasoning subspace claims unless lexical structure is
-controlled for. A small residual cross-model signal survives lexical
-residualization and merits further investigation under stronger
-controls (Studies D, E).}
+\emph{A row-permutation Procrustes test on cross-model frontier-transformer
+activations can produce extremely significant alignment results that
+appear, under in-sample lexical residualization, to be largely lexical;
+but the same alignment, under grouped cross-validation by template
+family or by domain, is essentially unaffected by the same lexical
+residualization. The lexical contribution detected by random-split
+controls is substantially template-specific. Future cross-model
+representation studies should report row-permutation $z$-scores,
+lexical baselines, in-sample lexical residualization, random-split
+cross-validated residualization, AND grouped cross-validation by
+template family and domain before claiming mechanistic, compositional,
+or operator-theoretic content. The chain matters: each step in the
+chain materially changes the interpretation of the previous step.}
 \end{quote}
 
 This is the framing the remainder of the paper now adopts.

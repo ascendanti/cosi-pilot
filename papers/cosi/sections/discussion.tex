@@ -35,7 +35,7 @@ matched-row activations more similar than scrambled-row activations
 \emph{regardless} of any operator-theoretic substrate, because both
 models encode prompt identity, lexical content, and template
 structure. Until lexical, template, and syntax-scrambled baselines
-have been run (Study B), the pilot result is consistent with both the
+have been run (Study B1), the pilot result is consistent with both the
 operator-theoretic interpretation and the much weaker
 shared-language-geometry interpretation.
 
@@ -59,10 +59,10 @@ first-pass Study B reported in \S\ref{sec:results-study-b} shows the
 opposite: the LLM-LLM Procrustes residual is essentially indistinguishable
 from one of the LLMs aligned against a TF-IDF representation of the
 same prompts, and is worse than a TF-IDF/template-only alignment. The
-follow-up Study B' (\S\ref{sec:results-study-b-prime}) reports the
+follow-up Study B2 (\S\ref{sec:results-study-b-prime}) reports the
 result of explicitly residualizing lexical/template structure out of
 the LLM activations and re-running the alignment. We treat the joint
-B/B' finding as the binding evidentiary constraint of the present
+B1/B2 finding as the binding evidentiary constraint of the present
 paper.
 
 The pilot does not show that the alignment survives the shared
@@ -112,7 +112,7 @@ controls remain to be run.
 
 \subsection{Phase~2: Training-Distribution Control (the Binding Outstanding Confound)}
 
-After the joint B/B' lexical control reported in
+After the joint B1/B2 lexical control reported in
 \S\ref{sec:initialstudies}, the binding outstanding confound is
 shared training-distribution overlap (Study D in
 \S\ref{sec:requiredwork}). The pilot is run on two model pairs whose
@@ -203,10 +203,10 @@ choice explicit; we recognize it is contestable.
 
 The pilot is what it is: a representational-alignment result against
 the row-permutation null, with the gaps to the strong claim explicitly
-catalogued, four follow-up control studies (A, B/B'/B'', C, F-CKA) run
+catalogued, four follow-up control studies (A, B/B2/B3, C, F-CKA) run
 and reported, and the remaining program (D and E) specified.
-The methodologically decisive controls --- Study B, Study B', and the
-cross-validated Study B'' --- show that the pilot's headline numbers
+The methodologically decisive controls --- Study B1, Study B2, and the
+cross-validated Study B3 --- show that the pilot's headline numbers
 are dominated by shared lexical and template encoding rather than by
 substrate-shared computation. The cross-validated CKA collapse from
 $0.84$--$0.96$ to $0.35$--$0.59$ on held-out residuals is the honest

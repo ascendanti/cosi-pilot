@@ -1,0 +1,168 @@
+\subsection{Study B4 — Grouped Lexical Residualization}
+\label{sec:results-study-b4}
+
+Study B3's cross-validated residualization performed random $70$/$30$
+splits of the 600-probe set. Random splits are honest at the prompt-row
+level but leak template-family structure: held-out rows almost always
+share a template family with training rows, because each template was
+sampled approximately uniformly across the random split. The review
+of the previous version of this manuscript correctly flagged this as
+the next decisive control to run.
+
+Study B4 is the grouped cross-validation. Three grouping schemes are
+implemented:
+
+\begin{itemize}
+    \item \textbf{Leave-One-Template-Family-Out (LOTFO):} the 600
+        probes are partitioned into $28$ template families
+        (recovered post-hoc by exact substring matching against the
+        deterministic generators in
+        \texttt{scripts/build\_phase1\_probes.py}). For each
+        template family, fit ridge on the other $27$ families,
+        residualize the held-out family's prompts, compute metrics
+        on those residuals.
+    \item \textbf{Leave-One-Domain-Out (LODO):} hold out one of
+        \{math, logic, polecon\} entirely; train on the other two.
+    \item \textbf{Two-vs-one split:} train on math$+$logic, test on
+        polecon (the largest single grouped split available).
+\end{itemize}
+
+For each grouped split, training-time TF-IDF and template-only
+vocabularies are fit on the training rows only; held-out test rows
+are featurized using the training vocabulary and IDF weights, with
+out-of-vocabulary test tokens dropped. This is the proper way to
+extend lexical featurization to grouped held-out rows.
+
+\paragraph{Result.} Table~\ref{tab:study-b4-lotfo} reports LOTFO.
+Table~\ref{tab:study-b4-lodo} reports LODO and the two-vs-one split.
+
+\begin{table}[h]
+\centering
+\caption{Study B4 LOTFO ($28$ leave-one-template-family-out splits).
+Variance-removed $95\%$ percentile intervals frequently span zero
+and reach substantially negative values --- the lexical regression
+fitted on $27$ template families does not generalize to the
+held-out family. CKA is essentially unchanged by residualization:
+$\Delta_\text{CKA} = -0.006, +0.019, +0.010$ across layers.}
+\label{tab:study-b4-lotfo}
+\begin{tabular}{l c c c c c}
+\toprule
+Layer & Var.\ removed (A) & Var.\ removed (B) & CKA orig & CKA resid & ΔCKA \\
+\midrule
+$0.25$ & $0.32$ [$-0.44$, $0.71$] & $0.22$ [$-0.50$, $0.59$] & $0.808$ & $0.802$ & $-0.006$ \\
+$0.50$ & $0.00$ [$-0.90$, $0.54$] & $0.06$ [$-0.78$, $0.53$] & $0.705$ & $0.723$ & $+0.019$ \\
+$0.75$ & $-0.01$ [$-0.98$, $0.59$] & $0.01$ [$-1.07$, $0.58$] & $0.600$ & $0.610$ & $+0.010$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Study B4 LODO and two-vs-one split. Held-out variance
+removed is uniformly negative (the lexical regression makes
+worse-than-mean predictions on the held-out group), and CKA
+\emph{increases} after residualization in every cell, by as much as
+$+0.34$. The lexical residualization fails outright when the held-out
+prompts share no template family with the training prompts.}
+\label{tab:study-b4-lodo}
+\begin{tabular}{l l c c c c c c}
+\toprule
+Held-out & Layer & Var.\ rem.\ (A) & Var.\ rem.\ (B) & CKA orig & CKA resid & ΔCKA & ΔProc \\
+\midrule
+\multicolumn{8}{l}{\emph{Leave-One-Domain-Out}} \\
+logic   & $0.25$ & $-0.49$ & $-0.45$ & $0.816$ & $0.858$ & $+0.042$ & $-0.006$ \\
+math    & $0.25$ & $-1.12$ & $-1.20$ & $0.904$ & $0.948$ & $+0.043$ & $-0.024$ \\
+polecon & $0.25$ & $-0.31$ & $-0.61$ & $0.774$ & $0.815$ & $+0.041$ & $-0.033$ \\
+logic   & $0.50$ & $-0.64$ & $-0.46$ & $0.668$ & $0.770$ & $+0.103$ & $-0.002$ \\
+math    & $0.50$ & $-1.93$ & $-1.29$ & $0.797$ & $0.914$ & $+0.117$ & $+0.005$ \\
+polecon & $0.50$ & $-1.41$ & $-1.06$ & $0.556$ & $0.891$ & $+0.335$ & $-0.015$ \\
+logic   & $0.75$ & $-0.78$ & $-0.44$ & $0.480$ & $0.621$ & $+0.141$ & $-0.001$ \\
+math    & $0.75$ & $-1.82$ & $-1.44$ & $0.635$ & $0.820$ & $+0.186$ & $+0.001$ \\
+polecon & $0.75$ & $-1.37$ & $-0.98$ & $0.558$ & $0.859$ & $+0.301$ & $-0.011$ \\
+\midrule
+\multicolumn{8}{l}{\emph{Two-vs-one (train math+logic, test polecon)}} \\
+polecon & $0.25$ & $-0.31$ & $-0.61$ & $0.774$ & $0.815$ & $+0.042$ & $-0.033$ \\
+polecon & $0.50$ & $-1.41$ & $-1.06$ & $0.556$ & $0.891$ & $+0.335$ & $-0.015$ \\
+polecon & $0.75$ & $-1.37$ & $-0.98$ & $0.558$ & $0.859$ & $+0.301$ & $-0.011$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{What Study B4 establishes.} The grouped cross-validation
+forces a substantial reframing of the negative methodological finding
+from Studies B2, B3.
+
+\begin{enumerate}
+    \item \textbf{The lexical structure that random-split
+        residualization removed is template-specific.} The TF-IDF
+        and template-only featurization fit on $27$ template
+        families does not generalize to the held-out template family:
+        variance-removed point estimates hover near zero with $95\%$
+        percentile intervals that extend substantially negative.
+        Under leave-one-domain-out the regression is even worse
+        (variance-removed strongly negative across the board: the
+        lexical model fitted on two domains makes worse-than-mean
+        predictions on the held-out domain).
+    \item \textbf{Under grouped CV, lexical residualization barely
+        affects CKA --- and often \emph{increases} it.} LOTFO
+        $\Delta_\text{CKA}$ ranges from $-0.006$ to $+0.019$
+        across layers (essentially zero). LODO and two-vs-one
+        $\Delta_\text{CKA}$ are positive in every cell, ranging from
+        $+0.04$ to $+0.34$. The CKA increase is partly a consequence
+        of the residualization failure: when ridge regression
+        produces worse-than-mean predictions, the residuals contain
+        correlated noise that, when present in both models, can
+        \emph{increase} apparent similarity. We therefore do not read
+        the LODO/two-vs-one $\Delta_\text{CKA} > 0$ as evidence of
+        ``lexical residualization strengthening alignment''; we read
+        it as ``lexical residualization fails outright in this
+        regime.''
+    \item \textbf{Procrustes residual is essentially unchanged
+        under grouped CV.} The Procrustes residual changes are at
+        most $\pm 0.04$ in any cell of LOTFO/LODO/two-vs-one. Combined
+        with the residualization failure, this is consistent with
+        ``the lexical regression is too template-specific to remove
+        meaningful variance from out-of-template activations.''
+    \item \textbf{The lexical contribution to cross-model alignment is
+        not as large as Studies B2/B3 suggested.} The B3
+        cross-validated residualization removed a substantial
+        portion of CKA ($-0.37$ to $-0.49$ on held-out random splits).
+        Under grouped CV the same residualization removes essentially
+        none of CKA. The honest reading is that B3's effect was
+        partly an artifact of within-template lexical structure that
+        random splits leak across train and test.
+\end{enumerate}
+
+\paragraph{Methodological lesson, expanded.} Random-split lexical
+controls in cross-model representation studies overstate the
+contribution of lexical structure to apparent similarity. Grouped
+cross-validation is the necessary strict version. But Study B4 also
+shows the limits of TF-IDF-based lexical featurization itself: a
+$455$-dimensional bag-of-words featurization does not generalize
+across template families in a way that supports clean residualization
+on held-out templates. Future cross-model representation studies that
+use lexical residualization as a control should: (i) use
+domain-general lexical features (subword tokenizer counts,
+pre-trained sentence-encoder representations, character-n-gram TF-IDF
+fitted on a large corpus rather than the probe set itself),
+(ii) report grouped cross-validation by template family and domain
+explicitly, (iii) report the variance-removed statistic for the
+held-out group to verify the lexical regression actually generalizes
+before interpreting the residualization result.
+
+\paragraph{What this means for the paper's central claim.} The
+strong reading of Studies B1/B2/B3 was: most of the cross-model
+representational similarity at these layers is shared lexical and
+template encoding. Study B4 weakens this claim. The honest reading
+after Study B4 is: \emph{a substantial portion of the cross-model
+similarity is template-specific encoding that random-split
+residualization can remove, but the structure that survives a
+template-grouped lexical control is much larger than the B3 number
+indicated.} The cross-model alignment is more robust to grouped
+lexical control than B3 suggested. This does not rescue the strong
+operator-theoretic interpretation: the surviving signal could still
+be training-distribution residue, deeper syntactic structure, or
+other shared encoding that our lexical featurization fails to capture.
+But the negative finding from B1/B2/B3 must be read with the B4
+qualification: random-split lexical controls overstate the lexical
+contribution.

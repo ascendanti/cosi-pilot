@@ -115,3 +115,62 @@ fixed fractions; (iii) variance threshold for PCA dimensionality
 (CKA) \cite{kornblith2019similarity} as a cross-validation metric.
 Discrepancies between Procrustes and CKA verdicts will be reported as
 informative findings rather than treated as failures of either method.
+
+\subsection{Methodological Robustness Notes}
+\label{sec:methods-robustness}
+
+We note the following methodological choices and their scope, to
+preempt predictable reviewer objections about Studies B1--B4:
+
+\begin{enumerate}
+    \item \textbf{TF-IDF vectorizer fit scope.} In Study B1 the
+        vocabulary is fit on all $600$ probes. In Study B2 (in-sample
+        residualization), the vocabulary is also fit on all $600$
+        probes; this is part of why B2 overestimates the lexical
+        contribution. In Study B3 (random-split cross-validation),
+        the vocabulary and IDF weights are fit on training rows only
+        and applied to held-out rows, with out-of-vocabulary tokens
+        dropped at test time --- this is the proper random-split
+        protocol. Study B4 (grouped CV) uses the same training-only
+        fit per held-out group.
+    \item \textbf{Centering and standardization.} Both LLM activations
+        and lexical features are column-centered using training-set
+        means in B3 and B4 (test-set means in B2). Activations are
+        not row-normalized; TF-IDF features are L2 row-normalized
+        before stacking. Activations are stored in float32; lexical
+        features in float32.
+    \item \textbf{Ridge regularization.} The ridge $\lambda = 0.01$
+        is fixed prior to running the lexical-residual studies (the
+        value is in the published \texttt{leakage.py} module file
+        and was not selected post-hoc). $\lambda$ sensitivity is not
+        formally swept in this paper. We expect the qualitative
+        finding (random-split residualization removes substantially
+        more variance than grouped-CV residualization) to be
+        $\lambda$-insensitive within $[10^{-4}, 1]$ but have not
+        verified this; reported as an explicit follow-up sweep.
+    \item \textbf{Variance-removed definition.} The variance-removed
+        statistic is computed on the \emph{raw activation matrix}
+        (sum of squared centered entries across all $N$ rows and all
+        $d$ hidden dimensions), not on the PCA-projected subspace.
+        Specifically, for activation matrix $X \in \R^{N \times d}$
+        with column means $\bar{X}$ and predicted matrix $\hat{X}$
+        from ridge regression, variance removed is $1 - \|X - \hat{X}\|_F^2 /
+        \|X - \bar{X}\|_F^2$. This is the multi-output coefficient
+        of determination $R^2$ summed across hidden dimensions. Negative
+        values are possible and observed (Study B4 LODO); they
+        indicate the regression makes worse-than-mean predictions,
+        which we read as evidence the lexical regression has
+        failed to generalize to the held-out group.
+    \item \textbf{Confidence intervals.} For B3 (random-split CV)
+        we report mean and $95\%$ percentile intervals across $50$
+        random splits. For B4 LOTFO we report mean and $95\%$
+        percentile intervals across the $28$ template families. For
+        B4 LODO and the two-vs-one split, only $3$ and $1$ instances
+        respectively are available, so per-split values are reported
+        directly. \emph{Cluster-bootstrap confidence intervals over
+        templates were not computed in this paper}; the templated
+        structure of the prompts means that row-level confidence
+        intervals can underestimate variance, and we flag this as a
+        statistical refinement to add before peer-reviewed
+        submission.
+\end{enumerate}
