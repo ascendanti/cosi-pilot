@@ -1,0 +1,96 @@
+\subsection{Study B'' — Cross-Validated Lexical Residualization}
+\label{sec:results-study-b-double-prime}
+
+Study B' fit ridge regression and computed residuals on the same set
+of $600$ probes, which permits a reviewer concern: the $94$--$97\%$
+in-sample variance removal at $V = 455$ TF-IDF + template features
+and $N = 600$ may include substantial overfitting. Study B'' is the
+cross-validated version. We perform $50$ random $70$/$30$ splits;
+on each split we fit ridge regression on the training rows, predict
+held-out activations from their lexical features, compute held-out
+residuals, and then compute Procrustes residual and linear CKA on
+the held-out residual matrices.
+
+\paragraph{Result.} Table~\ref{tab:study-b-double-prime} reports the
+cross-validated metrics. The held-out variance removed is
+substantially lower than the in-sample value, by approximately $10$
+percentage points at layer $0.25$ and $20$ percentage points at
+layers $0.5$ and $0.75$. Correspondingly, the CKA collapse is smaller
+than Study B' indicated, but it remains substantial.
+
+\begin{table}[h]
+\centering
+\caption{Study B'' cross-validated lexical residualization,
+$50$ random $70$/$30$ splits per layer fraction, raw
+activation-variance removed (sum over all hidden dimensions, not
+PCA-projected). The held-out numbers are the honest version of
+Study B''s in-sample numbers.}
+\label{tab:study-b-double-prime}
+\begin{tabular}{l c c c c c}
+\toprule
+Layer & Var.\ removed (A) held-out & Var.\ removed (B) held-out & CKA orig & CKA resid (held-out) & ΔCKA \\
+\midrule
+$0.25$ & $0.8849$ [$0.87$, $0.90$] & $0.8299$ [$0.81$, $0.85$] & $0.9644$ & $0.5948$ [$0.55$, $0.66$] & $-0.3696$ \\
+$0.50$ & $0.7540$ [$0.71$, $0.79$] & $0.7481$ [$0.71$, $0.77$] & $0.9098$ & $0.5236$ [$0.46$, $0.59$] & $-0.3862$ \\
+$0.75$ & $0.7517$ [$0.72$, $0.78$] & $0.7200$ [$0.68$, $0.75$] & $0.8439$ & $0.3545$ [$0.31$, $0.41$] & $-0.4894$ \\
+\bottomrule
+\end{tabular}
+
+\smallskip
+\small{Brackets show $95\%$ percentile intervals across the $50$ splits.
+Procrustes residuals: orig vs.\ residualized = $0.7659 \to 0.7977$
+(layer $0.25$), $0.9054 \to 0.9266$ (layer $0.5$), $0.9554 \to
+0.9672$ (layer $0.75$); $\Delta_\text{Proc} = +0.03, +0.02, +0.01$
+respectively, smaller still than the in-sample Study B' deltas.}
+\end{table}
+
+\paragraph{What Study B'' establishes.}
+
+\begin{enumerate}
+    \item \textbf{Study B's in-sample numbers were inflated by
+        overfitting.} The held-out variance removed is $0.72$--$0.88$,
+        not $0.94$--$0.97$. The cross-validated CKA collapse is
+        $-0.37$ to $-0.49$, not $-0.57$ to $-0.63$. The methodological
+        finding is real but materially smaller in magnitude than the
+        in-sample numbers suggested.
+    \item \textbf{The cross-validated negative finding still holds.}
+        Lexical and template features still explain a substantial
+        majority of the LLM activation variance (held-out
+        $0.72$--$0.88$ across both models and all layers), and CKA
+        still collapses substantially after lexical residualization
+        (from $0.84$--$0.96$ to $0.35$--$0.59$ on held-out test
+        rows). The qualitative conclusion that lexical structure
+        dominates the cross-model representational similarity
+        survives the cross-validation.
+    \item \textbf{The residual cross-model signal that survives
+        lexical control is larger than Study B' suggested.}
+        Cross-validated residualized CKA at layer $0.25$ is $0.59$
+        (95\% CI $[0.55, 0.66]$), compared to $0.39$ in the in-sample
+        Study B' result. There is a non-trivial cross-model
+        representational similarity that survives proper
+        lexical/template control. Whether this surviving similarity
+        is operator-theoretic substrate, training-distribution
+        residue, deeper syntactic structure, or pooling artifact
+        cannot be discriminated from the present controls alone.
+    \item \textbf{Procrustes residual is the more robust metric to
+        residualization than CKA.} The Procrustes residual change
+        across in-sample $\to$ cross-validated is small ($+0.07
+        \to +0.03$ at layer $0.25$); the CKA change is larger
+        ($-0.57 \to -0.37$). Procrustes operates in a constrained
+        $k$-dimensional PCA subspace and is less sensitive to the
+        global isotropic-scaling structure that lexical features
+        capture; CKA measures global geometric similarity and is
+        more sensitive to it.
+\end{enumerate}
+
+\paragraph{Methodological lesson.} A lexical-residual control
+\emph{must} be cross-validated. The in-sample residualization in
+Study B' overstates the magnitude of the negative finding by
+$10$--$25\%$ depending on layer and metric. For future cross-model
+representation comparison studies that use lexical residualization
+as a control, the protocol should be: (i) hold out a fraction of
+the prompt set, (ii) fit the lexical-to-activation regression on the
+training rows, (iii) compute residualized similarity metrics on the
+held-out rows only, (iv) average over many splits with confidence
+intervals reported. The Study B' protocol should not be cited as a
+diagnostic standard.
