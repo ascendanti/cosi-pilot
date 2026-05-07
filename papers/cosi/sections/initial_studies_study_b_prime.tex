@@ -1,0 +1,102 @@
+\subsection{Study B' — Lexical-Residual Alignment}
+\label{sec:results-study-b-prime}
+
+Study B established that the LLM--LLM Procrustes residual does not
+exceed what lexical/template baselines achieve on the same prompts.
+Study B' is the direct follow-up: if we explicitly residualize
+lexical and template structure out of each LLM's activations and
+re-run the alignment on the residuals, does any cross-model signal
+survive? This is the load-bearing test of whether the pilot's
+representational alignment carries information beyond shared
+prompt-surface structure.
+
+\paragraph{Procedure.} For each layer fraction $f \in \{0.25, 0.5,
+0.75\}$ and each model $M \in \{A, B\}$, we compute the residualized
+activation matrix
+\begin{equation}
+X_M^{\text{resid}} \;=\; X_M \;-\; L\,\hat{B}_M, \qquad
+\hat{B}_M \;=\; (L^\top L + \lambda I)^{-1} L^\top X_M,
+\label{eq:residualize}
+\end{equation}
+where $L \in \R^{N \times V}$ is the joint matrix of word-level TF-IDF
+features ($V = 431$) and template-only TF-IDF features ($V = 24$),
+$\lambda = 0.01$ is a small ridge regularizer, and $X_M \in
+\R^{N \times d_M}$ is the model's activation matrix. We then run
+Procrustes alignment with permutation null and linear CKA with
+permutation null on $(X_A^{\text{resid}}, X_B^{\text{resid}})$ and
+compare to the original (un-residualized) result.
+
+\paragraph{Result.} Table~\ref{tab:study-b-prime} reports the
+comparison.
+
+\begin{table}[h]
+\centering
+\caption{Study B' lexical-residual alignment. Lexical and template
+features explain $94$--$97\%$ of LLM activation variance at every
+layer. After residualization, linear CKA \emph{collapses} from
+$0.84$--$0.96$ to $0.21$--$0.39$ (Δ$_\text{CKA}$ = $-0.57$ to
+$-0.63$), while Procrustes residual weakens only modestly
+(Δ$_\text{Proc}$ = $+0.02$ to $+0.07$). A small residual cross-model
+signal survives lexical control (residualized CKA still $z = +67$ to
+$+95\sigma$ above the permutation null at chance $\approx 0.01$), but
+the bulk of the apparent alignment is lexical.}
+\label{tab:study-b-prime}
+\begin{tabular}{l c c c c c c}
+\toprule
+Layer & Variance Removed & Procrustes & Residualized & Δ$_\text{Proc}$ & CKA & Residualized CKA \\
+\midrule
+$0.25$ & $0.97$ (A), $0.96$ (B) & $0.7668$ & $0.8412$ & $+0.0744$ & $0.9636$ & $\mathbf{0.3923}$ \\
+$0.50$ & $0.94$ (A), $0.95$ (B) & $0.9056$ & $0.9443$ & $+0.0387$ & $0.9109$ & $\mathbf{0.3010}$ \\
+$0.75$ & $0.94$ (A), $0.95$ (B) & $0.9555$ & $0.9771$ & $+0.0215$ & $0.8427$ & $\mathbf{0.2079}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{What Study B' establishes.}
+
+\begin{enumerate}
+    \item \textbf{The LLM activations are largely predictable from
+        prompt-surface features.} Ridge regression of LLM activations
+        on a $455$-dimensional joint vocabulary of TF-IDF and
+        template-only features removes $94$--$97\%$ of the
+        activation variance at every layer fraction tested, in both
+        Phi-4 and Qwen3-Next-80B. Whatever the LLMs are encoding at
+        these layers, the bulk of it is predictable from
+        word-occurrence and template-skeleton statistics.
+    \item \textbf{The cross-model representational similarity (CKA)
+        collapses after lexical residualization.} CKA drops by
+        $0.57$ to $0.63$ across layers --- from ``representations
+        are essentially identical'' to ``representations are
+        moderately related.'' The bulk of the apparent geometric
+        similarity that the pilot reported was shared lexical/template
+        encoding, not substrate-shared computation.
+    \item \textbf{Procrustes residual changes more modestly than
+        CKA, but in the same direction.} The Procrustes residual
+        rises by only $0.02$ to $0.07$ after residualization. Two
+        readings are consistent: (i) Procrustes operates on a
+        $k$-dimensional PCA subspace whose top components may
+        already be partially lexical-orthogonal, or (ii) the optimal
+        orthogonal alignment in the residualized subspace is more
+        constrained but still finds substantial structure to align.
+        Either reading is compatible with the operator-theoretic
+        program; neither rescues the strong claim.
+    \item \textbf{A small cross-model signal survives lexical control.}
+        Residualized CKA values of $0.21$ to $0.39$ are still
+        $z = +67$ to $+95\sigma$ above the permutation null
+        ($\approx 0.01$). After removing lexical and template
+        structure, there is residual cross-model representational
+        similarity that is not zero. Whether this residual signal is
+        operator-theoretic substrate, training-distribution residue,
+        deeper syntactic structure, or pooling artifact cannot be
+        discriminated by Study B' alone.
+\end{enumerate}
+
+\paragraph{The methodological lesson.} The pilot's row-permutation
+Procrustes test produced $z$-scores in the $-89\sigma$ to $-101\sigma$
+range. Study B' demonstrates that those magnitudes do not licence
+the operator-theoretic interpretation: lexical-residual control
+removes the majority of the underlying cross-model similarity. Future
+applications of this methodology to language-model representation
+comparison should report the lexical-residual result alongside the
+raw Procrustes/CKA values; the raw values alone are insufficient
+evidence for any mechanistic claim about what the models share.

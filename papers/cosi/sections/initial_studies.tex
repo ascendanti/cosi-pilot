@@ -175,6 +175,8 @@ out lexical and template structure from the LLM activations and then
 testing whether the residual still admits cross-model alignment.
 This is a necessary follow-up; it is not performed here.
 
+\input{sections/initial_studies_study_b_prime}
+
 \subsection{Study C — Train/Test Procrustes Split}
 \label{sec:results-study-c}
 
@@ -196,45 +198,77 @@ residual.
 \subsection{Joint Reading of the Initial Studies}
 \label{sec:joint-reading}
 
-Read together, the initial studies produce a more nuanced empirical
-picture than the pilot result alone presents.
+Read together, the five initial studies produce a clear and
+methodologically consequential picture: the pilot's apparent
+cross-model alignment is real but is dominated by shared
+lexical/template encoding, not by substrate-shared computation.
 
-The pilot finding is a real cross-model representational signal, and
-both Study F-CKA (high CKA, well above permutation null) and the
-better-than-random invariance ratio in Study A confirm that the signal
-is statistically robust. The pilot is not measuring noise.
+The pilot result (Phases~0 and~1) and Study F-CKA agree that two
+architecturally different frontier transformers exhibit substantial
+representational similarity on matched compositional-evaluation
+prompts (CKA $0.84$--$0.96$, Procrustes residual far below the
+permutation null). Study C confirms this is not a same-data fit
+artifact: train/test gaps are essentially zero. So the alignment is a
+genuine property of the models on the data.
 
-But Study B shows that the signal does not exceed what shared
-lexical/template structure achieves on the same prompts: the LLM-B vs
-TF-IDF residual essentially equals the LLM-B vs LLM-A residual, and a
-pure TF-IDF/template-only alignment outperforms the LLM--LLM
-alignment. This is the strongest evidence the initial studies produce,
-and it pushes the interpretation of the pilot away from
-``operator-theoretic substrate shared across architectures'' and
-toward ``shared lexical/template encoding produces matched-prompt
-representational alignment in any sufficiently competent system.''
+But Study B shows the alignment does not exceed what simple lexical
+and template baselines achieve, and Study B' shows directly that
+$94$--$97\%$ of the LLM activation variance is predictable from
+$455$ TF-IDF and template features, and that lexical residualization
+collapses CKA from $0.84$--$0.96$ to $0.21$--$0.39$. The bulk of the
+representational similarity that the pilot's row-permutation
+Procrustes test detects is shared prompt-surface encoding, not
+substrate-shared compositional structure.
 
-Study A complicates the operator-theoretic reading further: the
-PCA subspace is more invariant than random, but the layer at which
-Procrustes alignment is strongest is the layer at which PCA invariance
-is weakest. Cross-architectural alignment and within-architecture
-invariance are anti-correlated across depth. This is not what the
-simplest operator-theoretic reading would predict.
+Study A independently complicates the operator-theoretic reading.
+PCA-derived candidate subspaces are partially preserved under the
+forward operator (more invariant than random subspaces in every
+cell), but absolute leakage is large ($0.51$--$0.89$), and the layer
+at which Procrustes alignment is strongest (layer $0.25$) is the
+layer at which Phi-4's PCA invariance is \emph{weakest}.
+Cross-architectural alignment and within-architecture invariance
+are anti-correlated across depth. The simplest operator-theoretic
+reading does not predict this.
 
-The honest joint reading is that the pilot result is a representational
-similarity finding consistent with the Platonic Representation
-Hypothesis at the geometric level, and consistent with several
-non-operator-theoretic alternative explanations. The operator-theoretic
-program articulated in this paper is not yet supported by these
-initial studies in the strong form. The full Studies A--G program is
-required, and the pilot's pre-registered protocol should not be
-extended to additional model pairs without first running Study B's
-required additional measurements (lexical-residual representations,
-behavioral grounding, train/test on cross-domain held-outs).
+\paragraph{The methodological finding the paper now makes.}
 
-We treat this honest joint reading as the most important finding of
-the present paper. The bridge between operator theory and mechanistic
-interpretability remains intellectually promising, but the pilot does
-not provide empirical support adequate to advance the strong claim.
-The next paper, after the full Studies A--G are completed, may or may
-not.
+A row-permutation null is too weak a baseline for cross-model
+Procrustes/CKA tests on language-model activations. Two competent
+language models exposed to the same prompts will produce matched-row
+activations more similar than scrambled-row activations regardless of
+any substrate-shared computation, because both encode the prompts'
+lexical and template content. Without a lexical baseline (Study B) and
+a lexical-residual control (Study B'), $z$-scores against the
+row-permutation null are uninformative for any mechanistic or
+operator-theoretic claim. The pilot's $z$-scores in the $-89\sigma$
+to $-101\sigma$ range are descriptive of the geometry but evidentially
+inadequate for the operator-theoretic interpretation.
+
+A residual cross-model signal does survive lexical control
+(residualized CKA $z = +67$ to $+95\sigma$ above null). Whether that
+residual signal is operator-theoretic substrate, training-distribution
+residue, deeper syntactic structure, or pooling artifact cannot be
+discriminated by the studies reported here. The operator-theoretic
+program articulated in this paper remains a research agenda. The
+pilot does not advance the strong claim; the initial controls actively
+weaken it; the residual signal after lexical control is a small but
+non-zero target for further investigation.
+
+\paragraph{What this means for the paper.} The most defensible
+contribution of this paper, after the initial studies, is no longer
+``we found cross-architectural operator-subspace isomorphism.'' It is:
+
+\begin{quote}
+\emph{A row-permutation Procrustes test can produce extremely
+significant cross-model alignment results on frontier transformer
+activations, but lexical and template baselines can match or exceed
+those results, and explicit lexical residualization removes the
+majority of the apparent alignment. This class of representational-alignment
+evidence is therefore insufficient for operator-theoretic or
+compositional-reasoning subspace claims unless lexical structure is
+controlled for. A small residual cross-model signal survives lexical
+residualization and merits further investigation under stronger
+controls (Studies D, E).}
+\end{quote}
+
+This is the framing the remainder of the paper now adopts.

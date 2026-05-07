@@ -39,16 +39,31 @@ have been run (Study B), the pilot result is consistent with both the
 operator-theoretic interpretation and the much weaker
 shared-language-geometry interpretation.
 
-The pilot does not show that the alignment is robust to held-out
-prompts. Procrustes was fit and evaluated on the same probe set; no
-train/test split was performed (Study C).
+The pilot itself did not show that the alignment is robust to
+held-out prompts; the original procedure fit and evaluated Procrustes
+on the same probe set. The first-pass Study C reported in
+\S\ref{sec:results-study-c} addresses this concern directly:
+train/test gap is essentially zero ($\leq 0.002$) for random splits
+and small ($\leq 0.09$) for cross-domain splits.
 
-The pilot does not show that the alignment exceeds simple lexical
-features (Study B), or that the promised CKA cross-validation
-\cite{kornblith2019similarity} agrees with the Procrustes verdict
-(Study F: CKA was committed in \S\ref{sec:methods} but not computed in
-this paper; this is a methodological commitment the pilot does not
-satisfy).
+The pilot itself did not compute the promised CKA cross-validation;
+the first-pass Study F-CKA reported in \S\ref{sec:results-study-f-cka}
+addresses this commitment: CKA is high ($0.84$--$0.96$ on the full
+set) and far above the permutation null. The alignment that Procrustes
+identifies is corroborated by an alignment-free metric. The
+methodological commitment is now satisfied for Phase~1.
+
+The pilot, even augmented by Studies C and F-CKA, does \emph{not} show
+that the alignment exceeds simple lexical and template baselines. The
+first-pass Study B reported in \S\ref{sec:results-study-b} shows the
+opposite: the LLM-LLM Procrustes residual is essentially indistinguishable
+from one of the LLMs aligned against a TF-IDF representation of the
+same prompts, and is worse than a TF-IDF/template-only alignment. The
+follow-up Study B' (\S\ref{sec:results-study-b-prime}) reports the
+result of explicitly residualizing lexical/template structure out of
+the LLM activations and re-running the alignment. We treat the joint
+B/B' finding as the binding evidentiary constraint of the present
+paper.
 
 The pilot does not show that the alignment survives the shared
 training-distribution confound. Both models in each pair are trained
@@ -95,24 +110,18 @@ claim is hypothesized, the test infrastructure exists, the pilot
 result is consistent with the hypothesis, and the discriminating
 controls remain to be run.
 
-\subsection{Phase~2: Training-Distribution Control (the Binding Confound)}
+\subsection{Phase~2: Training-Distribution Control (the Binding Outstanding Confound)}
 
-Among the seven studies of \S\ref{sec:requiredwork}, Study D
-(training-distribution-disjoint control) is the binding open work in
-the sense that no other study, however positive, can substitute for
-it. The pilot is run on two model pairs whose training distributions
-overlap substantially; until that overlap is broken in a controlled
-way, the pilot result is consistent with shared-corpus residue and
-the operator-theoretic interpretation cannot be preferred. Candidate
-controls include:
-
-\subsection{Phase~2: Training-Distribution Control}
-
-Phase~2 addresses the most important confound: the possibility that the
-aligned subspace is a residue of shared training distribution rather than
-a substrate-independent computational structure. The control requires a
-model whose training distribution is substantially disjoint from the
-Phase~1 pair's. Candidate controls include:
+After the joint B/B' lexical control reported in
+\S\ref{sec:initialstudies}, the binding outstanding confound is
+shared training-distribution overlap (Study D in
+\S\ref{sec:requiredwork}). The pilot is run on two model pairs whose
+training distributions overlap substantially; until that overlap is
+broken in a controlled way, even an alignment that survives lexical
+residualization is consistent with shared-corpus residue rather than
+substrate-independent computation. The control requires a model whose
+training distribution is substantially disjoint from the Phase~1
+pair's. Candidate controls:
 
 \begin{itemize}
     \item A model trained on a non-web-pretrained corpus (e.g., a
