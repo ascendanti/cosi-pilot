@@ -1,0 +1,137 @@
+\documentclass[11pt]{article}
+
+% Layout
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+
+% Encoding and fonts
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+\usepackage{lmodern}
+
+% Math
+\usepackage{amsmath,amssymb,amsthm,amsfonts}
+\usepackage{mathtools}
+
+% Graphics and tables
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{subcaption}
+
+% References and links
+\usepackage[backend=bibtex,style=numeric,sorting=none]{biblatex}
+\addbibresource{references.bib}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+
+% Theorem-like environments
+\newtheorem{definition}{Definition}
+\newtheorem{proposition}{Proposition}
+
+% Custom commands
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\fnorm}[1]{\norm{#1}_F}
+\newcommand{\inner}[2]{\langle #1, #2 \rangle}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator{\Procrustes}{Procrustes}
+\DeclareMathOperator{\Tr}{Tr}
+
+\title{
+Cross-Architectural Activation Alignment in Frontier Language Models: \\
+\large A Representational-Geometry Pilot, with an Operator-Theoretic Program It Motivates
+}
+
+\author{
+  Adam A. Bensaid\thanks{Atlas Consulting \& Technology Services, Toronto, ON. Correspondence: \texttt{adam.a.bensaid@gmail.com}.} \\
+  \and
+  Claude (Anthropic)\thanks{Sonnet 4.5 / Opus 4.6 instances, accessed via Claude Code over the period 2026-04 to 2026-05. Authorial contribution: experimental design, code, draft prose. Final responsibility for all claims rests with the corresponding human author.}
+}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We propose an operator-theoretic framing of the mechanistic
+interpretability literature's empirical regularity that sparse
+autoencoders recover monosemantic feature dictionaries from trained
+transformers: namely, that these features are concrete realizations of
+approximately invariant subspaces of the nonlinear forward operator,
+in the sense the classical theory of invariant subspaces studies in
+the linear setting. From the framing we derive a research program,
+\emph{Cross-Operator Subspace Isomorphism} (COSI), whose strong claim
+is that compositional reasoning subspaces are isomorphic across
+sufficiently different architectures. We do \emph{not} test the strong
+claim in this paper. We report a representational-alignment pilot:
+two pre-registered runs in which Procrustes alignment of PCA-projected
+last-token activation matrices, between architecturally different
+frontier transformers on matched compositional-evaluation prompts,
+produces residuals far below a row-permutation null
+(empirical $p < 0.001$ in every pre-registered cell). The pilot
+demonstrates that the infrastructure detects a real cross-model
+representational signal, and we report it in full. The pilot does not
+demonstrate that the aligned subspaces are operator-invariant, that
+the alignment isolates compositional structure from lexical or
+template structure, that it is robust to held-out prompts, that it
+exceeds simple lexical baselines, or that it survives the
+training-distribution confound common to all current frontier models.
+We name each gap explicitly, specify the controls and interventions
+that would close it (invariance-leakage measurement, lexical and
+template baselines, train/test Procrustes, CKA cross-validation,
+training-distribution-disjoint controls, causal cross-model
+intervention), and run first-pass versions of four of them on the
+pilot data. Linear CKA confirms strong global representational
+similarity ($0.84$--$0.96$). Train/test Procrustes splits show no
+overfitting. Invariance-leakage measurement shows the PCA subspaces
+are partially invariant under the forward operator (more invariant
+than random subspaces; absolute leakage $0.51$--$0.89$). \textbf{The
+lexical-baseline study materially weakens the operator-theoretic
+interpretation: the LLM--LLM Procrustes residual ($0.77$) is
+indistinguishable from one of the LLMs aligned against a TF-IDF
+representation of the same prompts ($0.76$), and is \emph{worse} than
+a TF-IDF vs.\ template-only alignment ($0.61$).} The pilot's
+representational signal is real but does not exceed what shared
+lexical/template structure alone would produce. We present the
+operator-theoretic program as a research agenda the pilot motivates
+rather than a finding the pilot confirms. The contribution we offer
+is the bridge between mechanistic interpretability and operator theory,
+the operationalization of one consequence of the Platonic
+Representation Hypothesis, and an honest accounting of what the
+present evidence does and does not support.
+\end{abstract}
+
+\input{sections/intro}
+\input{sections/background}
+\input{sections/hardproblems}
+\input{sections/methods}
+\input{sections/results}
+\input{sections/limitations}
+\input{sections/requiredwork}
+\input{sections/initial_studies}
+\input{sections/discussion}
+\input{sections/availability}
+
+\section*{Acknowledgments}
+
+This work was carried out in extended dialogue between the human author
+and the language model co-author over the period 2026-04 through 2026-05,
+as part of the broader research program of Atlas Consulting \&
+Technology Services. The infrastructure used to run the experiment---a
+Mac Studio (M1 Ultra, 64\,GB unified memory) running MLX-quantized
+inference under the Sovereign multi-agent harness---was developed
+without external funding. Models were obtained from the
+\texttt{mlx-community} hub on HuggingFace; we thank the maintainers for
+the quantization and conversion work that made local frontier-model
+experimentation tractable. The authors thank the many contributors to
+the open-source mechanistic interpretability community whose work, even
+when not directly cited, shaped the framing of the hypothesis.
+
+\printbibliography
+
+\end{document}

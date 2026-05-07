@@ -1,0 +1,142 @@
+{
+  "timestamp": "20260506T234643Z",
+  "phase": 1,
+  "probes": 600,
+  "by_domain": {
+    "logic": 200,
+    "math": 200,
+    "polecon": 200
+  },
+  "model_a": "Phi-4-Reasoning-Plus",
+  "model_b": "Qwen3-Next-80B-Thinking-5bit",
+  "fingerprints": {
+    "Phi-4-Reasoning-Plus": {
+      "architecture": "phi3",
+      "num_layers": 40,
+      "hidden_size": 5120,
+      "vocab_size": 100352
+    },
+    "Qwen3-Next-80B-Thinking-5bit": {
+      "architecture": "qwen3_next",
+      "num_layers": 48,
+      "hidden_size": 2048,
+      "vocab_size": 151936
+    }
+  },
+  "n_null_samples": 1000,
+  "by_layer_fraction": {
+    "0.25": {
+      "k": 21,
+      "var_explained_a": 0.9011317491531372,
+      "var_explained_b": 0.8772068619728088,
+      "observed_residual": 0.7668408155441284,
+      "permutation_null_mean": 1.0076469756364823,
+      "permutation_null_std": 0.0023842074542973616,
+      "permutation_null_p1": 1.0003542363643647,
+      "permutation_null_p5": 1.003403627872467,
+      "rotation_null_mean": 1.0322322024594672,
+      "rotation_null_std": 0.028610949042139813,
+      "z_vs_permutation": -101.00050633526801,
+      "below_p1_permutation": true
+    },
+    "0.5": {
+      "k": 25,
+      "var_explained_a": 0.9014977812767029,
+      "var_explained_b": 0.888412594795227,
+      "observed_residual": 0.9056392312049866,
+      "permutation_null_mean": 0.9942775394320488,
+      "permutation_null_std": 0.0009420880007208293,
+      "permutation_null_p1": 0.9916713827848435,
+      "permutation_null_p5": 0.9925329208374023,
+      "rotation_null_mean": 1.005962025455146,
+      "rotation_null_std": 0.009803653865579643,
+      "z_vs_permutation": -94.08707908310208,
+      "below_p1_permutation": true
+    },
+    "0.75": {
+      "k": 21,
+      "var_explained_a": 0.9038257002830505,
+      "var_explained_b": 0.8895680904388428,
+      "observed_residual": 0.9555203318595886,
+      "permutation_null_mean": 0.9959225085377693,
+      "permutation_null_std": 0.0004562886236324995,
+      "permutation_null_p1": 0.994711525440216,
+      "permutation_null_p5": 0.9951251417398452,
+      "rotation_null_mean": 1.0011715177411318,
+      "rotation_null_std": 0.005045261189285442,
+      "z_vs_permutation": -88.54522025234866,
+      "below_p1_permutation": true
+    }
+  },
+  "by_domain_alignment": {
+    "logic": {
+      "0.25": {
+        "k": 34,
+        "observed_residual": 0.8048901557922363,
+        "permutation_null_mean": 0.9657206885814666,
+        "z_vs_permutation": -66.96917730816065,
+        "below_p1_permutation": true
+      },
+      "0.5": {
+        "k": 45,
+        "observed_residual": 0.9157505035400391,
+        "permutation_null_mean": 0.9755110796689987,
+        "z_vs_permutation": -60.576266940562924,
+        "below_p1_permutation": true
+      },
+      "0.75": {
+        "k": 31,
+        "observed_residual": 0.9613140225410461,
+        "permutation_null_mean": 0.9890298750400544,
+        "z_vs_permutation": -45.41879980132326,
+        "below_p1_permutation": true
+      }
+    },
+    "math": {
+      "0.25": {
+        "k": 8,
+        "observed_residual": 0.7472750544548035,
+        "permutation_null_mean": 0.9961696681976319,
+        "z_vs_permutation": -56.39619703049736,
+        "below_p1_permutation": true
+      },
+      "0.5": {
+        "k": 10,
+        "observed_residual": 0.9009509682655334,
+        "permutation_null_mean": 0.9885875104665757,
+        "z_vs_permutation": -49.571820178460925,
+        "below_p1_permutation": true
+      },
+      "0.75": {
+        "k": 8,
+        "observed_residual": 0.9534787535667419,
+        "permutation_null_mean": 0.9933220348358154,
+        "z_vs_permutation": -38.764495218524665,
+        "below_p1_permutation": true
+      }
+    },
+    "polecon": {
+      "0.25": {
+        "k": 27,
+        "observed_residual": 0.8007446527481079,
+        "permutation_null_mean": 0.9690692876577377,
+        "z_vs_permutation": -72.4579261237152,
+        "below_p1_permutation": true
+      },
+      "0.5": {
+        "k": 21,
+        "observed_residual": 0.9429627060890198,
+        "permutation_null_mean": 0.9876146694421768,
+        "z_vs_permutation": -49.64191537218693,
+        "below_p1_permutation": true
+      },
+      "0.75": {
+        "k": 19,
+        "observed_residual": 0.9729664921760559,
+        "permutation_null_mean": 0.9938364063501358,
+        "z_vs_permutation": -40.42011960358716,
+        "below_p1_permutation": true
+      }
+    }
+  }
+}

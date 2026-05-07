@@ -1,0 +1,225 @@
+\section{Required Additional Work Before the Operator-Theoretic Claim}
+\label{sec:requiredwork}
+
+This section catalogues the studies that, jointly, would be required
+to support the strong operator-theoretic claim the COSI program
+articulates. None of these studies has been run in the present paper.
+We list them explicitly, with the gap each addresses, so that the
+present pilot result is read in proper context and so that subsequent
+work has a clear program to execute.
+
+\subsection{Study A. Invariance-Leakage Measurement}
+\label{sec:study-a}
+
+The paper defines a $k$-dimensional subspace $V \subseteq \R^d$ as
+approximately $\epsilon$-invariant under a (possibly nonlinear) map
+$f$ on a sample $X$ if
+\begin{equation}
+\frac{\fnorm{(I - P_V)\, f(P_V X)}}{\fnorm{f(P_V X)}} \;\leq\; \epsilon.
+\label{eq:leakage}
+\end{equation}
+This is the central mathematical object the operator-theoretic framing
+depends on. The pilot does not measure it. PCA top-$k$ components
+identify high-variance directions; high-variance is not invariance.
+
+\paragraph{Required.} For each model and each candidate subspace
+identification method (PCA, sparse autoencoder features
+\cite{bricken2023monosemanticity, cunningham2024sparse,
+templeton2024scaling, gao2024scaling, lieberum2024gemma}, learned
+linear probes \cite{hewitt2019structural, belinkov2022probing}),
+project activations onto $V$, pass them through the next layer's
+forward map, project the output onto $V$ and onto its orthogonal
+complement, and compute the leakage statistic
+\eqref{eq:leakage}. Report leakage as a function of layer, model,
+domain, subspace dimension, and subspace-identification method. A
+candidate subspace is operator-relevant only if its leakage is small
+relative to its capacity to compress activations.
+
+\paragraph{Gap addressed.} Whether the aligned subspaces are
+operator-invariant in the sense the framing requires, or merely
+high-variance principal components.
+
+\subsection{Study B. Lexical, Template, and Syntactic Baselines}
+
+The row-permutation null asks whether matched-row activations align
+better than scrambled-row activations. This is a low bar. Two
+competent language models exposed to the same English prompts will
+preserve enough lexical and syntactic structure that matched-row
+alignment exceeds scrambled-row alignment regardless of any
+operator-theoretic substrate.
+
+\paragraph{Required.} Run the same Procrustes alignment procedure on:
+
+\begin{itemize}
+    \item TF-IDF or bag-of-words representations of the same prompts
+        in place of the model activations, as a lexical baseline.
+    \item Sentence-transformer embeddings of the prompts as a
+        learned-but-non-LLM baseline.
+    \item Static word embeddings averaged over each prompt
+        \cite{mikolov2013distributed} as a pre-transformer baseline.
+    \item Prompts in which all content words have been replaced by
+        placeholder tokens (template-only baseline).
+    \item Prompts whose token sequence has been syntax-scrambled
+        (preserving lexical content, destroying compositional order).
+    \item Paraphrase-preserving variants where two semantically
+        equivalent prompts replace each original prompt.
+\end{itemize}
+
+If the lexical, template, or paraphrase baselines produce alignment
+qualities comparable to the LLM-activation alignment, the pilot result
+collapses to ``shared language geometry'' and the operator-theoretic
+claim must be correspondingly weakened or abandoned.
+
+\paragraph{Gap addressed.} Whether the alignment isolates compositional
+structure from lexical, template, syntactic, or tokenizer-induced
+structure.
+
+\subsection{Study C. Train/Test Procrustes and Cross-Domain Transfer}
+
+The pilot fits the orthogonal alignment $R^*$ on the full probe set
+and evaluates the residual on the same set. This conflates fit with
+evaluation and provides no out-of-sample protection.
+
+\paragraph{Required.} Fit $R^*$ on a randomly held-out training
+fraction (e.g., $70\%$) of the probe set, evaluate the residual on
+the held-out test fraction. Repeat across many random splits and
+report the mean and confidence interval. More demanding: fit on one
+domain (e.g., math) and evaluate on a different domain (e.g., logic),
+testing whether the alignment is domain-general or domain-specific.
+
+\paragraph{Gap addressed.} Whether the alignment is robust to held-out
+prompts and whether it generalizes across domains rather than overfit
+to the joint sample.
+
+\subsection{Study D. Training-Distribution-Disjoint Controls}
+
+Both Phi-4-Reasoning-Plus and Qwen3-Next-80B-A3B-Thinking are trained
+on substantially overlapping post-2024 web corpora. The aligned
+subspace could plausibly be a residue of shared training distribution
+rather than a substrate-independent computational structure.
+
+\paragraph{Required.} Replace one of the pilot pair's models with a
+training-distribution-distant model, holding the other fixed.
+Candidate disjoint-corpus controls:
+
+\begin{itemize}
+    \item A model trained primarily on a non-web scientific corpus,
+        e.g., a model in the Galactica \cite{taylor2022galactica}
+        lineage or a domain-specific scientific-literature model.
+    \item A multilingual model whose training distribution is
+        dominated by a non-English language.
+    \item A small-scale model trained from scratch on a deliberately
+        curated corpus with documented disjointness from the pilot
+        pair's training data.
+\end{itemize}
+
+If alignment quality scales with training-distribution overlap, the
+pilot result is corpus-residue. If alignment quality is preserved
+across substantial training-distribution disjointness, the
+substrate-independence reading is meaningfully supported.
+
+\paragraph{Gap addressed.} Whether the alignment is a substrate-independent
+computational structure or a shared training-corpus residue.
+
+\subsection{Study E. Cross-Model Causal Intervention}
+
+Procrustes alignment is correspondence evidence. The
+operator-theoretic claim that the aligned subspace is causally
+responsible for compositional reasoning behavior, rather than a
+correlated statistical shadow, requires intervention.
+
+\paragraph{Required.} Identify a direction $v_A \in V_A$ associated
+with a specific compositional-reasoning behavior in $M_A$ via
+established mechanistic-interpretability methods
+\cite{wang2023interpretability, conmy2023towards, marks2024sparse,
+meng2022rome}. Use the recovered Procrustes transformation $R^*$ to
+predict the corresponding direction $v_B = R^{*\top} v_A \in V_B$ in
+$M_B$. Predict the behavioral effect of ablating or steering along
+$v_B$ in $M_B$. Run the intervention. Compare predicted to observed
+effect across many such directions, reporting the prediction quality
+relative to a control of randomly chosen directions in $V_B$.
+
+\paragraph{Gap addressed.} Whether the alignment is causally
+explanatory of compositional behavior in both models or merely
+descriptive of activation geometry.
+
+\subsection{Study F. Methodology Robustness Sweeps}
+
+Several methodological choices in the pilot were not swept:
+
+\begin{itemize}
+    \item Pooling mode: last-token only; mean and max pooling and
+        content-token / answer-position / relation-token pooling not
+        reported.
+    \item Layer fractions: only $0.25$, $0.5$, $0.75$. Layer-by-layer
+        sweeps would resolve where the alignment is concentrated.
+    \item PCA variance threshold: only $0.90$; sensitivity at $0.80$,
+        $0.85$, $0.95$, $0.99$ unmeasured.
+    \item Whitening: not tested. Procrustes residuals can be sensitive
+        to differential variance structure across the top components
+        of the two matrices.
+    \item CKA \cite{kornblith2019similarity} cross-validation:
+        promised in the methods but not yet computed and reported. We
+        flag this as a methodological commitment that the pilot does
+        not satisfy.
+    \item SVCCA \cite{raghu2017svcca}, PWCCA \cite{morcos2018insights},
+        and generalized shape metrics \cite{williams2021generalized}
+        as further triangulation: not run.
+    \item Effect-size reporting beyond standardized $z$-scores:
+        confidence intervals, cluster bootstraps grouped by prompt
+        template and vocabulary family, finite-permutation $p$-values
+        with Monte Carlo standard errors.
+\end{itemize}
+
+\paragraph{Gap addressed.} Whether the pilot result is robust to
+reasonable variation in the methodological choices that were fixed by
+declaration rather than examined empirically.
+
+\subsection{Study G. Externally Verifiable Pre-Registration}
+
+The pilot's pre-registration document was committed to the same
+private repository as the run code. This is not externally
+auditable. Genuine pre-registration requires immutable timestamping
+on a public registry.
+
+\paragraph{Required.} For all subsequent COSI runs, deposit the
+analysis plan, the exact prompt set with content hash, the model
+checkpoint revisions, the random seeds, and the environment lockfile
+on the Open Science Framework, Zenodo, or equivalent, with the
+deposit timestamped before any data is observed. Cite the deposit
+DOI in subsequent papers.
+
+\paragraph{Gap addressed.} Whether the pre-registration commitments
+the pilot states are externally verifiable rather than internal to a
+private working repository.
+
+\subsection{Summary: What Joint Completion of Studies A--G Would Establish}
+
+A subsequent paper that reports Studies A--G in conjunction with the
+pilot result would have the following structure:
+
+\begin{itemize}
+    \item The aligned subspaces are demonstrably approximately invariant
+        under the forward operator (Study A), justifying the
+        operator-theoretic interpretation of the alignment.
+    \item The alignment exceeds simple lexical and template baselines
+        (Study B), justifying the compositional-structure interpretation
+        rather than the shared-language interpretation.
+    \item The alignment is robust to held-out probes and generalizes
+        across domains (Study C), justifying generalization claims.
+    \item The alignment survives substantial training-distribution
+        disjointness (Study D), justifying the substrate-independence
+        reading rather than the corpus-residue reading.
+    \item Cross-model interventions predicted by the alignment have
+        the predicted causal effects (Study E), justifying the
+        mechanistic interpretation rather than the correspondence
+        interpretation.
+    \item Methodological choices have been swept and the result is
+        robust (Study F), satisfying ordinary peer-review robustness
+        expectations.
+    \item Pre-registration is externally verifiable (Study G),
+        meeting current open-science standards.
+\end{itemize}
+
+We treat that subsequent paper as the work the present pilot
+motivates. The present paper is the first step.

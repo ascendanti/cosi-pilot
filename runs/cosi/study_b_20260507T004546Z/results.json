@@ -1,0 +1,98 @@
+{
+  "timestamp": "20260507T004546Z",
+  "n_probes": 600,
+  "n_null_samples": 500,
+  "layer": 0.25,
+  "vocab_sizes": {
+    "tfidf_word": 431,
+    "char_3gram": 1792,
+    "template_only": 24
+  },
+  "shapes": {
+    "LLM_A": [
+      600,
+      5120
+    ],
+    "LLM_B": [
+      600,
+      2048
+    ],
+    "TF-IDF": [
+      600,
+      431
+    ],
+    "char_3gram": [
+      600,
+      1792
+    ],
+    "template_only": [
+      600,
+      24
+    ]
+  },
+  "comparisons": [
+    {
+      "pairing": "(a) LLM_A vs LLM_B",
+      "k": 21,
+      "observed_residual": 0.7668408155441284,
+      "permutation_null_mean": 1.0077616533041,
+      "permutation_null_p1": 1.0009115362167358,
+      "z_vs_permutation": -106.54067623567197,
+      "below_p1_permutation": true
+    },
+    {
+      "pairing": "(b) LLM_A vs TF-IDF",
+      "k": 21,
+      "observed_residual": 0.926716148853302,
+      "permutation_null_mean": 0.9927807763814926,
+      "permutation_null_p1": 0.9911114484071731,
+      "z_vs_permutation": -92.9533187680807,
+      "below_p1_permutation": true
+    },
+    {
+      "pairing": "(c) LLM_B vs TF-IDF",
+      "k": 27,
+      "observed_residual": 0.7649024128913879,
+      "permutation_null_mean": 1.058412377357483,
+      "permutation_null_p1": 1.0523802137374878,
+      "z_vs_permutation": -119.07622924524144,
+      "below_p1_permutation": true
+    },
+    {
+      "pairing": "(d) TF-IDF vs char-3gram",
+      "k": 147,
+      "observed_residual": 0.35009610652923584,
+      "permutation_null_mean": 1.115142409324646,
+      "permutation_null_p1": 1.1103996658325195,
+      "z_vs_permutation": -392.4008946225914,
+      "below_p1_permutation": true
+    },
+    {
+      "pairing": "(e) TF-IDF vs template-only",
+      "k": 12,
+      "observed_residual": 0.6133740544319153,
+      "permutation_null_mean": 1.1259065210819243,
+      "permutation_null_p1": 1.1171032798290252,
+      "z_vs_permutation": -120.52330267864929,
+      "below_p1_permutation": true
+    },
+    {
+      "pairing": "(f) LLM_A vs char-3gram",
+      "k": 21,
+      "observed_residual": 0.9263806939125061,
+      "permutation_null_mean": 0.9928042095899582,
+      "permutation_null_p1": 0.9911398953199386,
+      "z_vs_permutation": -92.9959596700804,
+      "below_p1_permutation": true
+    },
+    {
+      "pairing": "(g) LLM_A vs template-only",
+      "k": 12,
+      "observed_residual": 0.9659928679466248,
+      "permutation_null_mean": 0.9958349220752716,
+      "permutation_null_p1": 0.9945555090904236,
+      "z_vs_permutation": -51.99779761752339,
+      "below_p1_permutation": true
+    }
+  ]
+}

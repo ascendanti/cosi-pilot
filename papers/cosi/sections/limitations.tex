@@ -1,0 +1,101 @@
+\section{Limitations and Threats to Validity}
+\label{sec:limitations}
+
+We catalogue the threats to validity that remain after Phase~1, and
+indicate which are addressed by which subsequent phase. Phase~2 is
+the binding open work.
+
+\subsection{Sample Size}
+
+Phase~0's probe set ($N = 96$) was at the lower bound of stable
+Procrustes alignment. Phase~1 raised $N$ to $600$ and the per-domain
+stratification used $n = 200$ each. Both regimes satisfy the
+$N \geq 5k$ rule of thumb at the operative dimensions and produce
+$z$-scores far above the threshold at which sample-size-driven null
+inflation could plausibly change the verdict.
+
+\subsection{Probe Set Domain Coverage}
+
+Phase~0 tested a single domain (political-economy / categorial-architecture).
+Phase~1 extended coverage to three distinct compositional-reasoning
+domains (mathematics, logic, political-economy), with per-domain
+stratification confirming the alignment signal in each domain
+independently. The COSI hypothesis as stated in
+Proposition~\ref{prop:cosi} is domain-general; the present empirical
+support is domain-plural. Genuine cross-domain generality (e.g.,
+natural images, audio, multimodal embeddings) remains untested.
+
+\subsection{Probe Length}
+
+Probes remain short (typically $12$--$30$ tokens) in both phases.
+Last-token pooling on short sequences may bias the activation toward
+prompt-template syntax rather than proposition content. The pooling
+sweep (mean, max) was deferred from Phase~1 due to compute scheduling
+and is committed for Phase~1b. Longer-probe replication ($30$--$200$
+tokens) is deferred to the same follow-up.
+
+\subsection{Shared Training Distribution}
+
+This is the most important confound and the one Phase~1 does \emph{not}
+address. Both Phi-4-Reasoning-Plus and Qwen3-Next-80B-A3B-Thinking are
+trained on post-2024 web corpora that overlap substantially. The
+aligned subspace we identify could plausibly be a residue of shared
+training-distribution statistics rather than a substrate-independent
+compositional structure. The cleanest test would replace one of the two
+models with an architecturally similar but training-distribution-distant
+model, holding the other fixed and observing whether the residual
+remains low.
+
+A near-perfect such control would be a model trained on a substantially
+disjoint corpus (e.g., a non-web-pretrained scientific-corpus model, or a
+multilingual model whose training distribution is dominated by a different
+language). Such a model is not in our local zoo. Phase~2 of the program
+is structured around this control. We flag this as the binding remaining
+work.
+
+\subsection{Architectural Distance Within the Pair}
+
+Phase~0 used two dense pure-attention transformers (Phi-4 and Qwen3-4B).
+Phase~1 paired the dense pure-attention Phi-4 with the hybrid
+attention/state-space-model Qwen3-Next-80B, materially increasing the
+architectural distance and confirming that the COSI signal survives the
+attention/SSM class boundary. Architectures further afield (pure SSM,
+recurrent, retrieval-augmented, multimodal) remain untested; Phase~4
+extends the test across this broader architectural landscape.
+
+\subsection{Linearity of the Alignment}
+
+Procrustes alignment is restricted to orthogonal transformations, which
+is a strict subset of the linear isomorphisms that classical operator
+theory permits. The COSI hypothesis as stated in
+Proposition~\ref{prop:cosi} requires only \emph{some} approximate
+isomorphism between the subspaces; the orthogonal restriction may
+underestimate the alignment if the true correspondence involves
+anisotropic scaling. We compute CKA in Phase~1 as a complementary metric
+that is invariant to isotropic scaling but not to anisotropic scaling, and
+will report any discrepancy between the two verdicts.
+
+We additionally note that the COSI hypothesis is in principle compatible
+with non-linear isomorphisms that no linear method recovers. Establishing
+such isomorphisms empirically requires either a generative-model-based
+alignment method or a stronger theoretical bridge; we treat this as
+beyond the scope of the present paper.
+
+\subsection{Correspondence vs.\ Causation}
+
+A positive COSI result is correspondence evidence: the two models'
+representations are geometrically aligned on a shared probe set. It is
+not causation evidence: it does not establish that the aligned subspace
+is what the models \emph{use} to compute the response, as opposed to a
+statistical shadow of something they share. Causal evidence requires
+intervention: ablate a direction in $V_A$, predict the corresponding
+ablation effect in $R(V_A) \subseteq V_B$, and run both. We treat
+intervention experiments as Phase~3, requiring causal-tracing
+infrastructure beyond the scope of the present calibration.
+
+\subsection{Pooling and Layer Sensitivity}
+
+The Phase~0 result uses last-token pooling at three fixed layer fractions.
+Both choices may interact with the result in ways not yet characterized.
+Phase~1 includes the full pooling and layer-fraction sensitivity sweeps
+declared in the design note.

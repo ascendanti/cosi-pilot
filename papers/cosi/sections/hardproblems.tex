@@ -1,0 +1,131 @@
+\section{Hard Problems and Where COSI Sits}
+\label{sec:hardproblems}
+
+The interpretability program has accumulated a number of hard, mostly
+open problems. We list those we take to be load-bearing, characterize
+the state of the literature on each, and locate the COSI program inside
+them. The list is not exhaustive; it is an attempt to draw the map at
+the resolution that makes the COSI contribution legible.
+
+\paragraph{(P1) The faithfulness problem.}
+Reverse-engineered circuits and recovered features are explanations of
+model behavior, but the gap between an explanation and the actual
+mechanism the model uses is real. Wang et al.~\cite{wang2023interpretability}
+acknowledge this explicitly for the indirect-object circuit; Conmy et
+al.~\cite{conmy2023towards} treat circuit discovery as an automated
+search problem precisely because hand-crafted explanations cannot be
+trusted to be faithful. \emph{COSI's relation:} a positive cross-model
+isomorphism is correspondence evidence. Causal-intervention
+verification is Phase~3 of the program (Section~\ref{sec:discussion}).
+The faithfulness problem is the reason Phase~3 is required.
+
+\paragraph{(P2) The polysemanticity / superposition problem.}
+Single neurons in trained networks typically respond to multiple
+unrelated concepts; this is the empirical fact that originally
+motivated SAEs. Elhage et al.~\cite{elhage2022superposition} showed
+that superposition is the predicted consequence of representing more
+features than there are neurons, and that the implicit feature space is
+recoverable through sparse dictionary learning. \emph{COSI's relation:}
+the operator-theoretic framing reads the superposition phenomenon as a
+finite-rank approximation issue: the forward operator's approximately
+invariant subspaces have dimension exceeding the network's neuron
+count, requiring sparse coding to express. The COSI test does not
+depend on the superposition resolution; it operates on the residual
+stream's geometry, which contains the superposed features whether or
+not we have a clean dictionary.
+
+\paragraph{(P3) The compositional limits problem.}
+Lake and Baroni \cite{lake2018generalization} and Hupkes et
+al.~\cite{hupkes2020compositionality} documented that neural sequence
+models often fail to generalize compositionally in regimes where humans
+trivially succeed. Dziri et al.~\cite{dziri2024faith} extended this to
+modern transformers, showing systematic failure modes on multi-step
+compositional reasoning. \emph{COSI's relation:} our hypothesis is
+about the geometry of compositional representations, not about whether
+the models reliably perform composition. A positive COSI result is
+consistent with both successful and failed compositional generalization;
+the relationship between geometric isomorphism and behavioral
+compositionality is itself a question we treat as Phase~4 of the
+program.
+
+\paragraph{(P4) The cross-model transfer-of-mechanism question.}
+If two models implement the same circuits, can interpretation results
+on one transfer to the other? The Platonic Representation Hypothesis
+\cite{huh2024platonic} and the universality results
+\cite{olah2020zoom, chughtai2023toy, gurnee2024universal} suggest yes;
+the empirical demonstrations remain limited. Bansal et
+al.~\cite{bansal2021revisiting} provide the strongest functional-level
+evidence through model stitching; CKA \cite{kornblith2019similarity}
+and related measures provide statistical-level evidence. \emph{COSI's
+relation:} a positive COSI result, particularly with the Procrustes
+transformation $R^*$ explicitly recovered, makes cross-model transfer
+of mechanism geometrically tractable. A direction $v_A$ in $V_A$ has a
+specific image $R^{*-1} v_A \in V_B$, predicting an intervention site
+in $M_B$ that should have the corresponding effect. Phase~3 tests this
+prediction.
+
+\paragraph{(P5) The training-distribution confound.}
+Two models trained on heavily overlapping web corpora may show
+representational similarity for reasons that have nothing to do with
+substrate-independent computation: shared training distribution
+produces shared statistical residue. Bansal et
+al.~\cite{bansal2021revisiting} and Huh et al.~\cite{huh2024platonic}
+both flag this as the chief alternative explanation for cross-model
+similarity. \emph{COSI's relation:} this is the most important
+confound the present calibration does \emph{not} address. Phase~2 of
+the program is structured around it (Section~\ref{sec:discussion}).
+A positive COSI result that survives a training-distribution swap is
+evidence for substrate-independent computation; one that does not is
+evidence for shared corpus residue.
+
+\paragraph{(P6) The interpretability scalability problem.}
+Recovered circuits and feature dictionaries grow polynomially with
+model scale. The interpretability cost per model has so far scaled with
+model size, despite the empirical universality findings suggesting the
+\emph{computational structure} should scale much more slowly.
+\emph{COSI's relation:} if the operator-theoretic framing holds, then
+the interpretability of one model in a family transfers via Procrustes
+alignment to the other models in the family; the per-model cost is
+amortized across the family. This is a research-program-level
+implication of COSI, not a calibration-level one.
+
+\paragraph{(P7) The biological--artificial bridge.}
+Neural population recordings reveal low-dimensional manifolds
+\cite{gallego2017neural, saxena2019towards} whose geometry is preserved
+across animals and behaviors. Goal-driven artificial networks predict
+these recordings well \cite{yamins2016using}. Whether the same
+geometric structure underlies both is an empirical question that has
+been gestured at more often than tested directly. \emph{COSI's
+relation:} the COSI methodology is, in principle, applicable to
+biological--artificial alignment as well, with neural population
+activity replacing one model's residual stream. We treat this as
+Phase~5; the present paper is restricted to the artificial--artificial
+case.
+
+\paragraph{(P8) The substrate-independence question proper.}
+The claim that compositional reasoning is substrate-independent in the
+strong sense---that the structure of the computation is preserved
+under arbitrary changes of substrate, subject to capacity constraints
+\cite{ashby1956introduction}---is the deepest claim the COSI program
+engages. The free-energy principle \cite{friston2010free} predicts the
+claim from variational arguments; cybernetics
+\cite{wiener1948cybernetics} and autopoiesis
+\cite{maturana1980autopoiesis} provide the structural language for
+how substrate-independent computation could be implemented and
+maintained. \emph{COSI's relation:} a fully successful program (Phases
+0--3 confirming, Phase~4 demonstrating mechanism transfer) would
+constitute the sharpest empirical evidence for substrate-independence
+that the field has produced for compositional reasoning. We do not
+overclaim what Phase~0 alone establishes; the proper claim is the
+calibration result reported here, with the path forward specified.
+
+These eight problems are not independent. The faithfulness problem (P1)
+is the precondition for the cross-model transfer question (P4). The
+training-distribution confound (P5) is the principal alternative
+explanation for any positive COSI result. The substrate-independence
+question (P8) is the eventual stake. The COSI program is structured
+around them: Phase~0 calibrates the infrastructure (this paper),
+Phase~1 amplifies architectural distance, Phase~2 addresses (P5),
+Phase~3 addresses (P1) and (P4) jointly, and the integration with (P7)
+and (P8) is the subject of the synthesis paper that this program is
+building toward.

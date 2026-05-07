@@ -1,0 +1,110 @@
+{
+  "timestamp": "20260507T004337Z",
+  "n_probes": 60,
+  "n_random_subspaces": 20,
+  "layer_fractions": [
+    0.25,
+    0.5,
+    0.75
+  ],
+  "by_model": {
+    "Phi-4-Reasoning-Plus": {
+      "fingerprint": {
+        "architecture": "phi3",
+        "num_layers": 40,
+        "hidden_size": 5120,
+        "vocab_size": 100352
+      },
+      "by_layer": [
+        {
+          "layer_fraction": 0.25,
+          "layer_index": 9,
+          "k": 14,
+          "n_prompts": 60,
+          "leakage_pca_token_mean": 0.7502697043218766,
+          "leakage_pca_sample": 0.7508721697959483,
+          "leakage_random_token_mean_mean": 0.8594804785623442,
+          "leakage_random_token_mean_std": 0.04021639087584721,
+          "leakage_random_sample_mean": 0.8600885666763967,
+          "leakage_random_sample_std": 0.04018675421054992,
+          "n_random_subspaces": 20
+        },
+        {
+          "layer_fraction": 0.5,
+          "layer_index": 19,
+          "k": 15,
+          "n_prompts": 60,
+          "leakage_pca_token_mean": 0.5250763643146352,
+          "leakage_pca_sample": 0.5275875814495616,
+          "leakage_random_token_mean_mean": 0.9110617007004024,
+          "leakage_random_token_mean_std": 0.01948365765703755,
+          "leakage_random_sample_mean": 0.9121631790831832,
+          "leakage_random_sample_std": 0.019341353866985662,
+          "n_random_subspaces": 20
+        },
+        {
+          "layer_fraction": 0.75,
+          "layer_index": 29,
+          "k": 14,
+          "n_prompts": 60,
+          "leakage_pca_token_mean": 0.5150767501094636,
+          "leakage_pca_sample": 0.5165163840351338,
+          "leakage_random_token_mean_mean": 0.9447115401075106,
+          "leakage_random_token_mean_std": 0.008841835921548451,
+          "leakage_random_sample_mean": 0.945346355858707,
+          "leakage_random_sample_std": 0.008664077750792329,
+          "n_random_subspaces": 20
+        }
+      ]
+    },
+    "Qwen3-Next-80B-Thinking-5bit": {
+      "fingerprint": {
+        "architecture": "qwen3_next",
+        "num_layers": 48,
+        "hidden_size": 2048,
+        "vocab_size": 151936
+      },
+      "by_layer": [
+        {
+          "layer_fraction": 0.25,
+          "layer_index": 11,
+          "k": 16,
+          "n_prompts": 60,
+          "leakage_pca_token_mean": 0.818375855370038,
+          "leakage_pca_sample": 0.8233529350246321,
+          "leakage_random_token_mean_mean": 0.9937243101181428,
+          "leakage_random_token_mean_std": 0.0018200440378382647,
+          "leakage_random_sample_mean": 0.9939621505614751,
+          "leakage_random_sample_std": 0.0016418117906198601,
+          "n_random_subspaces": 20
+        },
+        {
+          "layer_fraction": 0.5,
+          "layer_index": 23,
+          "k": 15,
+          "n_prompts": 60,
+          "leakage_pca_token_mean": 0.8849249298637308,
+          "leakage_pca_sample": 0.8937258743139711,
+          "leakage_random_token_mean_mean": 0.9946677868847582,
+          "leakage_random_token_mean_std": 0.0016814869565268766,
+          "leakage_random_sample_mean": 0.9948849906568231,
+          "leakage_random_sample_std": 0.0014744721656774623,
+          "n_random_subspaces": 20
+        },
+        {
+          "layer_fraction": 0.75,
+          "layer_index": 35,
+          "k": 13,
+          "n_prompts": 60,
+          "leakage_pca_token_mean": 0.8715503258854743,
+          "leakage_pca_sample": 0.8723918099621262,
+          "leakage_random_token_mean_mean": 0.994774256760984,
+          "leakage_random_token_mean_std": 0.0026019159840990017,
+          "leakage_random_sample_mean": 0.994874171952637,
+          "leakage_random_sample_std": 0.0025213462462322306,
+          "n_random_subspaces": 20
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,53 @@
+\begin{table}[h]
+\centering
+\caption{Study F-CKA: linear CKA between Phase~1 model activations.
+Full set ($S = 1000$) and per-domain ($S = 500$) permutation null
+samples. CKA is in $[0, 1]$; higher = more similar; permutation null
+mean $\approx 0.01$ on the full set (and $\approx 0.05$--$0.10$ on
+the smaller per-domain subsets).}
+\label{tab:study-f-cka}
+\begin{tabular}{l l c c c}
+\toprule
+Stratification & Layer & CKA & Perm.\ null mean & Above $p_{99}$? \\
+\midrule
+full set ($N=600$)    & $0.25$ & $0.9636$ & $0.0072$ & yes \\
+full set              & $0.50$ & $0.9109$ & $0.0086$ & yes \\
+full set              & $0.75$ & $0.8427$ & $0.0093$ & yes \\
+\midrule
+math ($n=200$)        & $0.25$ & $0.9041$ & $0.0318$ & yes \\
+math                  & $0.50$ & $0.7969$ & $0.0318$ & yes \\
+math                  & $0.75$ & $0.6348$ & $0.0286$ & yes \\
+logic ($n=200$)       & $0.25$ & $0.8160$ & $0.0621$ & yes \\
+logic                 & $0.50$ & $0.6675$ & $0.0637$ & yes \\
+logic                 & $0.75$ & $0.4798$ & $0.0428$ & yes \\
+polecon ($n=200$)     & $0.25$ & $0.7736$ & $0.0705$ & yes \\
+polecon               & $0.50$ & $0.5559$ & $0.0427$ & yes \\
+polecon               & $0.75$ & $0.5575$ & $0.0321$ & yes \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{What Study F-CKA finds.} CKA is high on the full set
+($0.84$--$0.96$) and substantially above the permutation null
+($\approx 0.01$) at every layer fraction. This confirms, by an
+alignment-free metric, the strong representational similarity that
+the Procrustes residual indicated. CKA agrees with Procrustes that
+the LLM--LLM activation geometries are not random: they share
+substantive structure.
+
+The per-domain CKA values are systematically lower than the full-set
+values across every domain and every layer (math $0.63$--$0.90$, logic
+$0.48$--$0.82$, polecon $0.56$--$0.77$, vs.\ $0.84$--$0.96$ for the
+full set). This is consistent with Study B's finding: a substantial
+portion of the LLM--LLM similarity is captured by template /
+cross-domain prompt-identity structure that, when stratified to a
+single domain, diminishes. The within-domain ordering (math $>$ logic
+$>$ polecon at most layers) tracks the templating density of the
+domain --- math probes are the most structurally repetitive (templated
+arithmetic) and produce the highest within-domain representational
+similarity, which is exactly what the lexical/template-driven reading
+of the alignment would predict. CKA does not by itself address the
+lexical-baseline concern any more than Procrustes does; it confirms
+the global geometric similarity is real, but the question of whether
+that similarity exceeds shared-language-encoding is the same question
+Study B answers (negatively, in the present pilot).

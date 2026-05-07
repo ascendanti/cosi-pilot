@@ -1,0 +1,59 @@
+\section{Code and Data Availability}
+\label{sec:availability}
+
+All code, configuration, probe data, and experimental artifacts
+described in this paper are scheduled for public release under the
+Atlas Consulting \& Technology Services research program at the URL
+\textbf{[REPOSITORY URL TO BE INSERTED ON SUBMISSION]}, accompanied by
+a Zenodo deposit assigning a DOI to the activation-matrix dataset
+($\sim 57$\,MB across Phase~0 and Phase~1). At time of submission the
+artifacts are organized in a working repository at the following
+relative paths, which will be preserved in the public release:
+
+\begin{itemize}
+    \item \texttt{src/sovereign/research/cosi/extract.py} ---
+        residual-stream activation extraction harness, with explicit
+        per-architecture forward-pass replication for \texttt{phi3},
+        \texttt{qwen3}, and \texttt{qwen3\_next} dispatches.
+    \item \texttt{src/sovereign/research/cosi/align.py} ---
+        Procrustes alignment, permutation null, random-rotation null,
+        and shared-subspace projection.
+    \item \texttt{scripts/cosi\_smoke.py} and
+        \texttt{scripts/cosi\_smoke\_80b.py} ---
+        smoke tests validating the three architecture dispatches.
+    \item \texttt{scripts/cosi\_phase0.py} ---
+        the end-to-end Phase~0 runner. The exact run reported here is
+        archived at
+        \texttt{runs/cosi/phase0\_20260506T230920Z/}, including
+        per-prompt activation matrices for both models, the per-layer
+        Procrustes residuals, and the full permutation-null sample
+        distributions.
+    \item \texttt{data/cosi/probe\_set\_frontier\_v1.jsonl} ---
+        the 96-prompt probe set used in Phase~0.
+    \item \texttt{docs/research\_notes/2026-05-06\_cosi\_design.md} ---
+        the pre-registration document declared before Phase~0 was run.
+    \item \texttt{docs/research\_notes/2026-05-06\_cosi\_phase0\_result.md} ---
+        the post-run result note with pre-registration compliance check.
+\end{itemize}
+
+The repository is structured to make the Phase~0 result independently
+re-runnable. The activation matrices are deterministic conditional on
+model checkpoints (which are immutable HuggingFace MLX-community
+artifacts) and prompts (which are committed verbatim). The
+permutation-null sample distributions are reproducible under the seeds
+recorded in the result manifest. Phase~1 specifications, including the
+extended probe set construction protocol, are recorded in the same
+directory structure as they are produced.
+
+Model checkpoints used: \texttt{mlx-community/Phi-4-reasoning-plus-8bit}
+and \texttt{mlx-community/Qwen3-4B-8bit} for Phase~0;
+\texttt{mlx-community/Qwen3-Next-80B-A3B-Thinking-5bit} for Phase~1.
+Both architectures route through the published \texttt{mlx\_lm} model
+modules without modification; the COSI extractor parallels the inner
+forward pass rather than monkey-patching it.
+
+The reproducibility infrastructure is described in detail in the
+companion methodology document at
+\texttt{docs/REPRODUCIBILITY\_STANDARD.md}, which specifies the
+run-manifest, environment-fingerprint, and replication-script standards
+that all Sovereign experimental runs adhere to.

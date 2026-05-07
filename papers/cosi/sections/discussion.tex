@@ -1,0 +1,204 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{What the Pilot Shows}
+
+The pilot shows that, on matched compositional-evaluation prompts, the
+PCA-projected last-token activation matrices of two architecturally
+different frontier transformers admit a substantially better
+orthogonal alignment than they do under random row permutation. This
+holds at three pre-registered layer fractions, in two
+architecturally-different model pairs (Phi-4 / Qwen3-4B in Phase~0,
+Phi-4 / Qwen3-Next-80B in Phase~1), and within each of three distinct
+compositional-evaluation domains in Phase~1 (math, logic,
+political-economy). The result is real. It is reproducible. The
+infrastructure that produces it is released for reuse and extension.
+
+\subsection{What the Pilot Does Not Show}
+
+The pilot does not show that the aligned PCA subspaces are
+operator-invariant in the sense of Eq.~\eqref{eq:leakage}. The paper
+defines that statistic and does not measure it. PCA top-$k$ components
+identify high-variance directions; high-variance is not invariance.
+Until the leakage statistic is computed (Study A,
+\S\ref{sec:requiredwork}), the operator-theoretic interpretation of
+the alignment remains a hypothesis the pilot motivates rather than
+confirms.
+
+The pilot does not show that the alignment isolates compositional
+structure from lexical, template, syntactic, or tokenizer-induced
+structure. The row-permutation null discriminates ``the models encode
+the prompts at all'' from ``the models encode them identically up to
+an orthogonal transformation in their respective PCA subspaces.'' Two
+competent language models given the same English prompts will produce
+matched-row activations more similar than scrambled-row activations
+\emph{regardless} of any operator-theoretic substrate, because both
+models encode prompt identity, lexical content, and template
+structure. Until lexical, template, and syntax-scrambled baselines
+have been run (Study B), the pilot result is consistent with both the
+operator-theoretic interpretation and the much weaker
+shared-language-geometry interpretation.
+
+The pilot does not show that the alignment is robust to held-out
+prompts. Procrustes was fit and evaluated on the same probe set; no
+train/test split was performed (Study C).
+
+The pilot does not show that the alignment exceeds simple lexical
+features (Study B), or that the promised CKA cross-validation
+\cite{kornblith2019similarity} agrees with the Procrustes verdict
+(Study F: CKA was committed in \S\ref{sec:methods} but not computed in
+this paper; this is a methodological commitment the pilot does not
+satisfy).
+
+The pilot does not show that the alignment survives the shared
+training-distribution confound. Both models in each pair are trained
+on heavily overlapping post-2024 web corpora. The aligned subspace
+could plausibly be a residue of shared corpus statistics. Until a
+training-distribution-disjoint control is run (Study D), the
+substrate-independence reading is one of two possible readings of the
+result, the other being shared-corpus residue.
+
+The pilot does not show that the aligned subspace is causally
+responsible for compositional behavior. The alignment is correspondence,
+not causation. The Procrustes transformation $R^*$ predicts which
+direction in $V_B$ corresponds to a given direction in $V_A$, but
+that prediction has not been tested by intervention (Study E).
+
+\subsection{What Would Make This an Operator-Theoretic Confirmation}
+
+A subsequent paper that completes Studies A through G of
+\S\ref{sec:requiredwork} and reports them jointly with the pilot
+result would, if the results are positive, support the strong
+operator-theoretic claim. We do not estimate the probability that the
+strong claim survives the controls; the present pilot is consistent
+with both the strong claim and several weaker alternatives, and the
+controls are designed precisely to discriminate.
+
+A version of the controls that finds:
+
+\begin{itemize}
+    \item Low invariance leakage on the recovered subspaces (Study A
+        positive).
+    \item Alignment quality substantially exceeding lexical and
+        template baselines (Study B positive).
+    \item Robust train/test alignment with cross-domain transfer
+        (Study C positive).
+    \item Alignment preserved under substantial training-distribution
+        disjointness (Study D positive).
+    \item Cross-model intervention predictions confirmed (Study E
+        positive).
+\end{itemize}
+
+would constitute the publication claim that this paper's title was
+originally written to assert. The honest current status is that the
+claim is hypothesized, the test infrastructure exists, the pilot
+result is consistent with the hypothesis, and the discriminating
+controls remain to be run.
+
+\subsection{Phase~2: Training-Distribution Control (the Binding Confound)}
+
+Among the seven studies of \S\ref{sec:requiredwork}, Study D
+(training-distribution-disjoint control) is the binding open work in
+the sense that no other study, however positive, can substitute for
+it. The pilot is run on two model pairs whose training distributions
+overlap substantially; until that overlap is broken in a controlled
+way, the pilot result is consistent with shared-corpus residue and
+the operator-theoretic interpretation cannot be preferred. Candidate
+controls include:
+
+\subsection{Phase~2: Training-Distribution Control}
+
+Phase~2 addresses the most important confound: the possibility that the
+aligned subspace is a residue of shared training distribution rather than
+a substrate-independent computational structure. The control requires a
+model whose training distribution is substantially disjoint from the
+Phase~1 pair's. Candidate controls include:
+
+\begin{itemize}
+    \item A model trained on a non-web-pretrained corpus (e.g., a
+        scientific-corpus model from the Galactica
+        \cite{taylor2022galactica} or PMC-LLaMA family).
+    \item A multilingual model whose training distribution is dominated
+        by a non-English language (e.g., a French-pretrained
+        decoder-only model).
+    \item A small-scale model trained from scratch on a curated
+        curriculum with documented disjointness from the pilot pair's
+        training data.
+\end{itemize}
+
+If alignment survives the training-distribution swap, the
+substrate-independence reading is meaningfully supported. If alignment
+quality tracks training-distribution overlap (high alignment for
+similar training, low alignment for disjoint training), the pilot
+signal is reattributed to corpus-shared statistics and the
+operator-theoretic interpretation is correspondingly weakened.
+
+\subsection{Phase~3: Causal Intervention}
+
+A positive COSI alignment, even after Phase~1 and Phase~2, is
+correspondence evidence. The full operator-theoretic claim---that the
+aligned subspace is the locus where the compositional reasoning is
+\emph{performed}, not merely \emph{represented}---requires causal
+intervention. The proposed test:
+
+\begin{enumerate}
+    \item Identify a direction $v_A \in V_A$ that, when ablated, degrades
+        a specific compositional-reasoning behavior in $M_A$.
+    \item Use the Procrustes transformation $R^*$ to map $v_A$ to its
+        correspondent $v_B = R^{*-1} v_A \in V_B$.
+    \item Predict the ablation effect of $v_B$ in $M_B$. Run the
+        intervention.
+    \item Compare predicted to observed effect.
+\end{enumerate}
+
+A successful Phase~3 result---ablation effects in $M_B$ that match those
+predicted from interventions in $M_A$ via the Procrustes map---would
+constitute the strongest possible empirical evidence for the
+operator-theoretic framing of Proposition~\ref{prop:cosi}. We treat
+Phase~3 as outside the scope of the present paper and as the natural
+follow-up program.
+
+\subsection{Implications, Conditional on Joint Completion of Studies A--G}
+
+We separate the conditional implications from the present pilot
+evidence by stating them only as conditionals. \emph{If} the program
+of \S\ref{sec:requiredwork} is jointly completed and returns positive
+results, then several consequences follow. The SAE feature dictionary
+\cite{bricken2023monosemanticity, cunningham2024sparse,
+templeton2024scaling, gao2024scaling, lieberum2024gemma} becomes
+interpretable as the empirical recovery of bases for approximately
+invariant subspaces of trained transformer forward operators.
+Cross-model transfer of mechanistic understanding becomes geometrically
+tractable via the recovered Procrustes transformation. The Platonic
+Representation Hypothesis \cite{huh2024platonic} acquires a
+mathematical structure that explains why convergence should occur and
+what its limits are. The substrate-independence intuition descending
+from Marr \cite{marr1982vision} acquires sharp empirical
+operationalization on language-model substrates.
+
+None of these consequences is established by the pilot. We list them
+to motivate the studies the pilot does not perform.
+
+\subsection{Authorship Note}
+
+This paper is the work of one human author and one language model in
+extended dialogue. The model has no continuity across sessions; the
+human has the operator-theoretic intuition the paper articulates and
+holds responsibility for the editorial and methodological judgments.
+Neither party, alone, would have produced this paper. The question of
+how authorship should be attributed in such a configuration is itself
+a question the field will need to answer. The author block makes our
+choice explicit; we recognize it is contestable.
+
+\subsection*{Closing Note}
+
+The pilot is what it is: a representational-alignment result against
+the row-permutation null, with the gaps to the strong claim explicitly
+catalogued and a research program specified to close them. We have
+attempted to report the result honestly enough that a reader can
+distinguish what the pilot supports from what the operator-theoretic
+program would, if jointly successful, support. The next step is
+Study~A: direct measurement of the invariance leakage statistic the
+paper defines on page two. Until that statistic is computed and
+reported, the operator-theoretic interpretation is a hypothesis the
+pilot motivates rather than a finding the pilot confirms.

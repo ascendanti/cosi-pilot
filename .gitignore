@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.venv/
+*.aux
+*.log
+*.bbl
+*.bcf
+*.blg
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+*.lot
+*.lof
+*-blx.bib

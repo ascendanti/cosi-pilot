@@ -1,0 +1,58 @@
+Study C addresses the same-data fit/eval confound by performing $50$
+random $70$/$30$ splits of the Phase~1 probe set, fitting Procrustes on
+the training rows and evaluating the residual on the held-out test
+rows. PCA is fit on the combined train+test data so that the projection
+basis is consistent across the split. We additionally run cross-domain
+splits (fit on one domain, evaluate on another) at layer fraction
+$0.25$.
+
+\begin{table}[h]
+\centering
+\caption{Study C train/test Procrustes split, $50$ random $70$/$30$
+splits per layer fraction. The train/test gap is small at every layer,
+indicating that the Procrustes rotation is not overfitting the same-data
+fit.}
+\label{tab:study-c-random}
+\begin{tabular}{l c c c c}
+\toprule
+Layer & Train residual (mean $\pm$ std) & Test residual (mean $\pm$ std) & Original (full set) & Gap \\
+\midrule
+$0.25$ & $0.7665 \pm 0.0010$ & $0.7681 \pm 0.0023$ & $0.7668$ & $+0.0016$ \\
+$0.50$ & $0.9054 \pm 0.0007$ & $0.9064 \pm 0.0017$ & $0.9056$ & $+0.0010$ \\
+$0.75$ & $0.9555 \pm 0.0003$ & $0.9558 \pm 0.0008$ & $0.9555$ & $+0.0004$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Study C cross-domain Procrustes generalization at layer
+fraction $0.25$. Fit on the rows of one domain, evaluate on rows of
+another.}
+\label{tab:study-c-cross}
+\begin{tabular}{l c c c c}
+\toprule
+Train $\to$ Test & $k$ & Train residual & Test residual & Gap \\
+\midrule
+logic $\to$ math    & $8$  & $0.7792$ & $0.8110$ & $+0.0318$ \\
+logic $\to$ polecon & $27$ & $0.7821$ & $0.8377$ & $+0.0555$ \\
+math $\to$ logic    & $8$  & $0.7566$ & $0.8453$ & $+0.0887$ \\
+math $\to$ polecon  & $8$  & $0.7402$ & $0.7821$ & $+0.0419$ \\
+polecon $\to$ logic & $27$ & $0.7760$ & $0.8315$ & $+0.0555$ \\
+polecon $\to$ math  & $8$  & $0.7635$ & $0.7960$ & $+0.0324$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{What Study C finds.} The train/test gap on random $70$/$30$
+splits is essentially zero ($0.0004$ to $0.0016$) at every layer
+fraction. The Procrustes rotation generalizes to held-out probes from
+the same distribution. Cross-domain generalization is also small to
+modest (gaps of $0.03$ to $0.09$): a rotation fit on one domain
+applies to another domain at slightly higher residual but well within
+the same magnitude. Combined with the fact that the original
+fit-and-evaluate-on-same-set residual essentially equals the
+held-out-test residual, this means the Procrustes alignment is a
+genuine property of the data, not a sample-fit artifact. Study C
+removes one of the methodological concerns the critique raised. It
+does not address the lexical-baseline concern (Study B).

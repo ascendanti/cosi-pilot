@@ -1,0 +1,228 @@
+\section{Introduction}
+\label{sec:intro}
+
+Over the past two years, the mechanistic interpretability program has
+converged on an unexpected empirical regularity. Sparse autoencoders
+(SAEs) trained on the residual stream of large transformers recover
+dictionaries of features that, individually, behave as discrete
+computational primitives \cite{bricken2023monosemanticity,
+cunningham2024sparse, templeton2024scaling, gao2024scaling}. The
+features are interpretable across many examples; they activate on
+recognizable concepts; their ablation produces predictable behavioral
+changes. This is the case across model families, model sizes, training
+regimes, and tokenizers. The pattern is sufficiently robust that the
+\emph{universality hypothesis}---the conjecture that different networks
+trained on similar tasks recover similar internal computations---has
+been advanced as a working principle of the field
+\cite{olah2020zoom, chughtai2023toy, gurnee2024universal}.
+
+A separate line of work has documented the same regularity from the
+representational-geometry angle. Bansal et al.~\cite{bansal2021revisiting}
+showed that the lower layers of one model can be ``stitched'' to the
+upper layers of another with only a thin trainable interface, and that
+the stitched model performs nearly as well as either original; this
+implies a deep correspondence between the intermediate representations
+of independently trained networks. Kornblith et al.~\cite{kornblith2019similarity}
+established centered kernel alignment (CKA) as a similarity measure
+robust to the symmetries that should not matter for the comparison and
+showed that representations across models are far more similar than the
+sheer dimensionality of the representation spaces would predict at
+chance. Most recently, Huh et al.~\cite{huh2024platonic} formulated the
+\emph{Platonic Representation Hypothesis}: that as models scale and
+capability increases, their representations converge toward a shared
+statistical model of the world.
+
+What has been missing, in our reading, is the mathematical object that
+this empirical convergence corresponds to.
+
+\subsection*{The Operator-Theoretic Bridge}
+
+We propose that the SAE feature dictionary is a concrete realization of
+the \emph{approximately invariant subspace structure} of the nonlinear
+forward operator that constitutes a transformer's inference pass. The
+classical theory of invariant subspaces of bounded linear operators on
+Hilbert spaces \cite{lomonosov1973invariant, enflo1987nontrivial,
+beauzamy1988introduction, aronszajn1954invariant} asks whether every
+such operator admits a non-trivial closed invariant subspace---that is,
+a subspace $V$ such that $T(V) \subseteq V$. The question is open in
+the Hilbert space setting; Lomonosov \cite{lomonosov1973invariant}
+established the affirmative for operators commuting with a non-zero
+compact operator, and Enflo \cite{enflo1987nontrivial} showed
+counter-examples exist for general Banach spaces. The structural
+intuition is the older one: when an operator admits an invariant
+subspace, its action decomposes into restrictions to simpler
+sub-operators, and the geometry of the operator becomes legible through
+the geometry of its invariant subspaces.
+
+Transformer forward passes are not bounded linear operators. They
+compose linear projections, attention computations, and pointwise
+nonlinearities. The classical theorems do not apply directly. We use
+the language of invariant subspaces in an \emph{approximate} sense: a
+subspace $V$ is approximately invariant under a (possibly nonlinear)
+map $f$ on a representative sample if the projection of $f(V)$ back
+onto $V$ leaves a residual that is small compared to the operator's
+overall action. This is the operational content of the empirical
+finding that SAE features are stable across forward passes: they
+identify directions in activation space that the forward operator
+preserves approximately.
+
+The mechanistic interpretability literature has been doing operator
+theory for two years without naming it as such. Our first contribution
+is to make the bridge explicit.
+
+\subsection*{The Falsifiable Consequence}
+
+If the bridge holds---if SAE feature dictionaries are bases for
+approximately invariant subspaces of the forward operators of trained
+transformers---then a sharp empirical consequence follows. Two models
+$M_A$ and $M_B$ with different architectures, run on the same
+compositional probe set, should admit an orthogonal alignment between
+their respective approximately invariant subspaces, with Procrustes
+residual significantly below the chance level set by a permutation null
+that breaks the semantic correspondence between rows while preserving
+each model's internal geometry. Performance comparability between
+architectures (the weak universality claim) is consistent with many
+internal mechanisms; representational isomorphism is not. The
+isomorphism is testable. The test can return a null. We pre-register
+both the protocol and the significance criterion before observing data.
+
+This is the \emph{Cross-Operator Subspace Isomorphism} (COSI) program,
+of which the present paper is the calibration step.
+
+\subsection*{What This Paper Reports}
+
+We report a representational-alignment pilot in two pre-registered
+runs. We are explicit that the pilot does not test the strong
+operator-theoretic claim; it tests a weaker but still interesting
+sub-claim, with controls and interventions that would close the gap
+specified as an explicit research program (\S\ref{sec:requiredwork}).
+
+\textbf{Phase~0:} Phi-4-Reasoning-Plus, a dense pure-attention
+reasoning model in the Phi-3 architecture family \cite{abdin2024phi4},
+against Qwen3-4B, a dense pure-attention generalist model in the Qwen3
+family \cite{qwen2025qwen3}, on $N = 96$ compositional-evaluation
+prompts drawn from a single political-economy domain. The observed
+Procrustes residuals are $0.61$, $0.81$, $0.81$ at the three
+pre-registered layer fractions; the empirical permutation $p$-value
+is $< 0.001$ at every layer (the observed residual is below the
+$1$st percentile of the $S = 1000$ permutation null distribution).
+
+\textbf{Phase~1:} Phi-4-Reasoning-Plus against Qwen3-Next-80B-A3B-Thinking
+\cite{qwen2025qwen3}, a hybrid attention/state-space-model architecture,
+on $N = 600$ prompts split equally across mathematical, logical, and
+political-economy compositional-evaluation domains. The observed
+Procrustes residuals are $0.77$, $0.91$, $0.96$ at the three layer
+fractions, with empirical $p < 0.001$ at every layer and at every
+per-domain stratification cell (three domains $\times$ three layers,
+$n = 200$ per cell, $S = 500$ permutation samples).
+
+\subsection*{What These Results Do and Do Not Show}
+
+These results show that, on matched compositional-evaluation prompts,
+the PCA-projected last-token activation matrices of two architecturally
+different frontier transformers admit a substantially better orthogonal
+alignment than they do under random row permutation. This is a real
+cross-model representational signal. We report it in full.
+
+These results do \emph{not} yet show:
+
+\begin{enumerate}
+    \item That the aligned PCA subspaces are approximately invariant
+        under the forward operator in the sense the operator-theoretic
+        framing requires. The paper defines approximate invariance as
+        a leakage statistic but does not measure it; PCA top-$k$
+        components capture variance, not necessarily invariance.
+    \item That the alignment isolates compositional reasoning structure
+        from lexical, template, syntactic, or tokenizer-induced
+        structure. The row-permutation null is too weak to discriminate
+        these. Two competent language models given the same English
+        prompts will produce more aligned matched-row activations than
+        scrambled-row activations \emph{regardless} of any deeper
+        substrate similarity.
+    \item That the alignment is robust to held-out probes. We fit
+        Procrustes on the full probe set and evaluate on the same set;
+        we do not perform a train/test split.
+    \item That the alignment exceeds the alignment achievable by simple
+        lexical features (TF-IDF, sentence-transformer embeddings).
+    \item That the alignment survives the shared training-distribution
+        confound. Both models in each pair are trained on overlapping
+        post-2024 web corpora.
+    \item That the aligned subspace is causally responsible for any
+        compositional behavior. Procrustes alignment is correspondence,
+        not causation.
+\end{enumerate}
+
+We are explicit about each of these gaps because the dramatic
+appearance of the headline numbers (residuals near $0.8$ against null
+means near $1.0$, with empirical $p < 0.001$ at every cell) could be
+read as much stronger evidence for the strong operator-theoretic claim
+than the experiment supports. Section~\ref{sec:requiredwork} specifies
+the additional studies that would, jointly, support the strong claim.
+None of those studies has been run in the present paper.
+
+\subsection*{Contributions}
+
+\begin{enumerate}
+    \item \textbf{An operator-theoretic framing as a research program.}
+        We propose, and articulate at the level of the synthesis paper
+        outlined elsewhere in this research program, that the
+        mechanistic interpretability literature's empirical regularities
+        are most parsimoniously read as evidence for approximately
+        invariant subspaces of the forward operator. The framing is a
+        program, not a finding.
+    \item \textbf{Pre-registered methodology and infrastructure.} We
+        specify a pre-registered protocol for cross-model
+        representational alignment, with declared layer fractions,
+        pooling, dimensionality threshold, significance criterion, and
+        null distributions. The infrastructure is released for
+        reuse and extension.
+    \item \textbf{A representational-alignment pilot result.} Phases~0
+        and 1 demonstrate that matched compositional-evaluation prompts
+        produce more orthogonally alignable PCA-projected activation
+        geometries across architecturally different frontier
+        transformers than under random row permutation, with empirical
+        $p < 0.001$ in every pre-registered cell.
+    \item \textbf{An explicit accounting of what the pilot does not
+        establish, and the studies that would close each gap.}
+        Section~\ref{sec:requiredwork} catalogues five required
+        additional studies (invariance-leakage measurement, lexical and
+        template baselines, train/test Procrustes with cross-domain
+        transfer, training-distribution-disjoint controls, causal
+        cross-model intervention) and indicates which of them addresses
+        which gap.
+\end{enumerate}
+
+\subsection*{Where This Sits in the Field}
+
+We take the operator-theoretic framing seriously enough to claim it
+unifies several open problems in interpretability that have been
+discussed largely in isolation: the universality hypothesis
+\cite{olah2020zoom, chughtai2023toy}, the polysemanticity / superposition
+problem \cite{elhage2022superposition}, the cross-model
+transfer-of-mechanism question implicit in the Platonic Representation
+Hypothesis \cite{huh2024platonic}, and the substrate-independence
+intuition that has organized the broader cognitive science of
+representation since Marr \cite{marr1982vision}. We map these
+explicitly in Section~\ref{sec:hardproblems}. The bridge to
+computational neuroscience---to the neural-population doctrine
+\cite{saxena2019towards} and to the geometry of biological invariants
+\cite{okeefe1971hippocampus, hafting2005microstructure, gallego2017neural,
+yamins2016using}---and to the cybernetic and free-energy frameworks
+\cite{ashby1956introduction, friston2010free, achille2018emergence}
+that anticipate the same structure from independent grounds, we touch
+in the discussion (Section~\ref{sec:discussion}) but do not develop in
+this paper. The full integration is the subject of a forthcoming
+synthesis paper from the same research program.
+
+\subsection*{Outline}
+
+Section~\ref{sec:background} surveys the four literatures the bridge
+draws on: operator theory, mechanistic interpretability, cross-model
+representational alignment, and the substrate-independence tradition.
+Section~\ref{sec:hardproblems} maps the open problems COSI sits
+among. Section~\ref{sec:methods} formalizes the COSI hypothesis and
+specifies the protocol. Section~\ref{sec:results} reports the Phase~0
+calibration. Section~\ref{sec:limitations} catalogues the threats to
+validity that Phase~0 does not address. Section~\ref{sec:discussion}
+specifies Phases 1--3 and articulates the implications, conditional on
+confirmation, across the literatures the framework bridges.

@@ -1,0 +1,233 @@
+\section{Background and Related Work}
+\label{sec:background}
+
+\subsection{Invariant Subspaces of Bounded Operators}
+
+Let $T$ be a bounded linear operator on a separable Hilbert space $H$.
+A closed subspace $V \subseteq H$ is \emph{invariant} under $T$ if
+$T(V) \subseteq V$. The \emph{invariant subspace problem} asks whether
+every such $T$ on an infinite-dimensional separable $H$ admits a
+non-trivial closed invariant subspace---one other than $\{0\}$ or $H$
+itself. The question is open in the Hilbert space case; in finite
+dimensions every operator trivially admits invariant subspaces (its
+eigenspaces, in particular). Two structural facts about the literature
+matter here.
+
+First, when an operator admits an invariant subspace, its action
+decomposes: writing $T$ in block form with respect to the splitting
+$H = V \oplus V^\perp$ shows that the upper-right block vanishes and
+the operator's geometry becomes legible through the geometry of its
+restrictions to invariant subspaces. The existence of invariant
+subspaces is the existence of a useful coordinate system for the
+operator.
+
+Second, the affirmative results form a hierarchy. Aronszajn and Smith
+\cite{aronszajn1954invariant} established that completely continuous
+(compact) operators always admit non-trivial invariant subspaces.
+Lomonosov \cite{lomonosov1973invariant} extended this dramatically: any
+operator commuting with a non-zero compact operator admits a
+non-trivial invariant subspace. Read \cite{read1984solution}
+constructed counter-examples on $\ell^1$, and Argyros and Haydon
+\cite{argyros2011hereditarily} produced a Banach space on which every
+bounded operator has the form scalar-plus-compact (so every operator
+has invariant subspaces, but the construction requires extreme
+hereditary indecomposability). The Hilbert space case remains open.
+Beauzamy's monograph \cite{beauzamy1988introduction} gives the standard
+treatment.
+
+Transformer forward passes are not bounded linear operators. They are
+nonlinear maps composed of linear projections, multi-head attention
+(itself a nonlinear function of the input through softmax), gated
+feed-forward layers, and residual connections. The classical theorems
+do not apply. We use the language of invariant subspaces in an
+\emph{approximate, empirical} sense: a $k$-dimensional subspace
+$V \subseteq \R^d$ is approximately $\epsilon$-invariant under a map
+$f: \R^d \to \R^d$ on a sample $X$ if
+$\fnorm{(I - P_V) f(P_V X)} / \fnorm{f(P_V X)} \leq \epsilon$, where
+$P_V$ is the orthogonal projection onto $V$. This is a sample-level
+operationalization of the structural intuition the classical theory
+formalizes; we make no claim about the limiting infinite-dimensional
+case.
+
+\subsection{Mechanistic Interpretability: Circuits and Sparse Autoencoders}
+
+The mechanistic interpretability program seeks to identify the
+computational primitives implemented by trained neural networks,
+typically by reverse-engineering specific circuits or by decomposing
+the residual stream into interpretable components.
+
+The circuits-level work has identified increasingly specific mechanisms.
+Olah et al.~\cite{olah2020zoom} articulated the program through case
+studies in vision models. Elhage et al.~\cite{elhage2021mathematical}
+provided a mathematical framework for transformer circuits.
+Olsson et al.~\cite{olsson2022context} identified \emph{induction
+heads} as a specific attention-head pattern responsible for the
+majority of in-context learning behavior in large transformers.
+Wang et al.~\cite{wang2023interpretability} reverse-engineered a
+multi-component circuit for indirect-object identification in GPT-2
+Small. Geva et al.~\cite{geva2021transformer} showed that transformer
+feed-forward layers behave as key-value memories. Meng et
+al.~\cite{meng2022rome} demonstrated that specific factual associations
+can be located and edited in MLP weights. Conmy et
+al.~\cite{conmy2023towards} introduced automated circuit discovery.
+
+The polysemanticity problem---that single neurons typically respond to
+multiple unrelated concepts---was formalized by Elhage et
+al.~\cite{elhage2022superposition} as the \emph{superposition}
+hypothesis: networks pack more features than they have neurons by
+representing them as sparse linear combinations in a higher-dimensional
+implicit feature space. The natural inversion of this hypothesis is to
+\emph{recover} the implicit feature space via sparse dictionary
+learning, which is what sparse autoencoders do.
+
+The SAE program has scaled rapidly. Bricken et
+al.~\cite{bricken2023monosemanticity} demonstrated that sparse
+autoencoders trained on the residual stream of small models recover
+features that are individually interpretable across many examples.
+Cunningham et al.~\cite{cunningham2024sparse} extended this to larger
+models with substantially larger feature dictionaries.
+Templeton et al.~\cite{templeton2024scaling} performed the procedure on
+Claude 3 Sonnet, recovering on the order of millions of features,
+including features that respond to abstract concepts (deception, code
+errors, the Golden Gate Bridge) across modalities. Gao et
+al.~\cite{gao2024scaling} demonstrated systematic scaling of SAE
+training and evaluation. Lieberum et al.~\cite{lieberum2024gemma}
+released open SAE checkpoints for the Gemma 2 family. Marks et
+al.~\cite{marks2024sparse} showed that SAE features can be assembled
+into causal circuits at the feature level. The empirical case for SAE
+features as the right basis for the residual stream is now substantial
+across multiple research groups, multiple model families, and multiple
+scales.
+
+The universality hypothesis---that different networks recover similar
+features---has accumulated specific evidence. Chughtai et
+al.~\cite{chughtai2023toy} showed that small networks trained on group
+operations recover the same algorithmic decompositions across random
+seeds and architectural variations. Gurnee et al.~\cite{gurnee2024universal}
+identified \emph{universal neurons} in GPT-2 models that activate on the
+same patterns across independently trained models. Nanda et
+al.~\cite{nanda2023progress} showed that grokking dynamics correspond
+to discrete phase transitions in the recovered circuit, with similar
+dynamics across initializations.
+
+\subsection{Cross-Model Representational Alignment}
+
+A separate literature studies how representations across different
+networks compare directly. The methodological starting point is the
+observation that comparing two representation matrices requires
+choosing which symmetries one wants the comparison to be invariant to.
+
+Word-embedding alignment is the historical precedent. Mikolov et
+al.~\cite{mikolov2013distributed} showed that word embeddings trained
+independently on different corpora have approximately the same internal
+structure. Smith et al.~\cite{smith2017offline} and Conneau et
+al.~\cite{conneau2017word} demonstrated that bilingual lexicons could
+be recovered without parallel data by orthogonal Procrustes alignment
+of monolingual word embedding spaces. The success of this procedure
+across language pairs and across embedding methods is the strongest
+empirical case for substrate-independent linguistic structure that
+exists in the static-embedding literature.
+
+For learned-feature representations of the kind transformers produce,
+the methodological landscape is broader. Raghu et al.~\cite{raghu2017svcca}
+introduced singular vector canonical correlation analysis (SVCCA) as a
+representation-similarity measure. Morcos et al.~\cite{morcos2018insights}
+developed projection-weighted CCA (PWCCA) addressing some of SVCCA's
+sensitivities. Kornblith et al.~\cite{kornblith2019similarity}
+introduced centered kernel alignment (CKA) as a measure invariant to
+orthogonal transformations and isotropic scaling but not to invertible
+linear transformations, and showed it discriminates between models in
+ways that the previous measures do not. Williams et
+al.~\cite{williams2021generalized} proposed a family of generalized
+shape metrics including CKA and Procrustes as special cases. Klabunde
+et al.~\cite{klabunde2024similarity} provide a recent survey of the
+methodological landscape.
+
+Bansal et al.~\cite{bansal2021revisiting} introduced model stitching as
+a complementary tool: rather than measuring representational similarity
+directly, train a thin connecting layer between the lower half of one
+model and the upper half of another, and observe whether the stitched
+model retains performance. They argue that model stitching reveals
+representational compatibilities that scalar similarity measures miss.
+Lenc and Vedaldi \cite{lenc2015understanding} are an earlier
+representative of the same methodological intuition applied to
+convolutional networks.
+
+The most recent and most directly related synthesis is Huh et
+al.~\cite{huh2024platonic}, the \emph{Platonic Representation
+Hypothesis}: representations across models are converging, with scale
+and capability, toward a shared statistical model of reality. Their
+evidence assembles results from many of the works cited above into a
+single hypothesis. The COSI program of the present paper is a specific
+operationalization of one consequence of their hypothesis: if
+representations converge, they should admit a sharp orthogonal
+alignment, with a residual significantly below the chance level set by
+the appropriate null distribution. The contribution we add is the
+operator-theoretic framing that explains \emph{why} the convergence
+should produce alignable subspaces, not merely correlated activations.
+
+\subsection{Substrate-Independence: Cognitive Science, Cybernetics, Free-Energy}
+
+The intuition that compositional reasoning is substrate-independent in
+the relevant sense is older than the language model literature. Marr's
+three levels of analysis \cite{marr1982vision} distinguish the
+computational, the algorithmic, and the implementational levels and
+argue that the computational level is independent of the substrate
+that performs it. Ashby's \emph{law of requisite variety}
+\cite{ashby1956introduction} establishes a structural constraint:
+any controller must contain at least as much variety as the disturbance
+it regulates, regardless of the controller's substrate. Wiener's
+cybernetics \cite{wiener1948cybernetics} provides the framework within
+which substrate-independent feedback structure becomes the object of
+study. Maturana and Varela's autopoiesis
+\cite{maturana1980autopoiesis} extends the framework to
+self-sustaining computational systems whose organization is preserved
+even as their components turn over.
+
+Friston's free-energy principle \cite{friston2010free} provides a
+unifying mathematical framework: any self-maintaining system that
+resists dispersion into thermal equilibrium must minimize a variational
+free energy that bounds surprise on its sensory inputs. The principle
+predicts that any such system---biological or artificial---should
+develop internal states that approximate the posterior over its
+environment's hidden causes, and that these internal states should be
+substrate-independent in the relevant sense, since the variational
+objective is. Achille and Soatto \cite{achille2018emergence} derive an
+analogous result specifically for deep networks under information
+bottleneck regularization \cite{tishby2015deep}, showing that invariance
+and disentanglement emerge as consequences of an information-theoretic
+objective rather than as architectural choices.
+
+Computational neuroscience has accumulated direct evidence for
+substrate-independent invariants in biological computation. Place cells
+\cite{okeefe1971hippocampus} and grid cells
+\cite{hafting2005microstructure} implement spatial maps with consistent
+geometric structure across individual animals. Yamins and DiCarlo
+\cite{yamins2016using} demonstrated that goal-driven deep networks
+develop intermediate representations that linearly predict primate
+visual cortex responses. Gallego et al.~\cite{gallego2017neural} and
+Saxena and Cunningham \cite{saxena2019towards} articulate a \emph{neural
+population doctrine}: the natural unit of analysis is the population's
+collective state in a low-dimensional manifold, not the individual
+neuron, and the manifolds have stable geometric structure across
+animals and behaviors. The convergence of these observations with the
+universality findings in artificial networks is, in our reading, what
+the operator-theoretic framework would predict if the framework
+captures the actual structure of the computation.
+
+\subsection{Sequence-Model Lineage}
+
+Briefly: the architecture under study (transformers) sits in a lineage
+of sequence models including LSTMs \cite{hochreiter1997long}, structured
+state-space models (S4 \cite{gu2022s4}, Mamba \cite{gu2024mamba}), and
+more recent hybrid architectures combining attention with state-space
+components. The Qwen3-Next family used in our Phase~1 is an instance of
+this hybrid design. The operator-theoretic framing predicts that the
+isomorphism, if it holds, should hold across these architectural classes
+and not only within them. We address this directly in the Phase~1
+specification (Section~\ref{sec:discussion}). The transformer
+architecture itself \cite{vaswani2017attention} is treated as
+representative of the dense pure-attention class; we make no claims
+specific to its design choices that would not also apply to any
+architecture implementing approximate-finite-state computation over
+sequence inputs.

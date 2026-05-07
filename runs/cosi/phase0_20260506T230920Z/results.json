@@ -1,0 +1,65 @@
+{
+  "timestamp": "20260506T230920Z",
+  "probes": 96,
+  "model_a": "Phi-4-Reasoning-Plus",
+  "model_b": "Qwen3-4B",
+  "fingerprints": {
+    "Phi-4-Reasoning-Plus": {
+      "architecture": "phi3",
+      "num_layers": 40,
+      "hidden_size": 5120,
+      "vocab_size": 100352
+    },
+    "Qwen3-4B": {
+      "architecture": "qwen3",
+      "num_layers": 36,
+      "hidden_size": 2560,
+      "vocab_size": 151936
+    }
+  },
+  "n_null_samples": 1000,
+  "by_layer_fraction": {
+    "0.25": {
+      "k": 33,
+      "var_explained_a": 0.8889189958572388,
+      "var_explained_b": 0.9022217392921448,
+      "observed_residual": 0.6063634157180786,
+      "permutation_null_mean": 1.0593895319700242,
+      "permutation_null_std": 0.011457130459413958,
+      "permutation_null_p1": 1.0292259168624878,
+      "permutation_null_p5": 1.0394959926605225,
+      "rotation_null_mean": 1.3458327578210365,
+      "rotation_null_std": 0.031555089918441775,
+      "z_vs_permutation": -39.54097562707846,
+      "below_p1_permutation": true
+    },
+    "0.5": {
+      "k": 27,
+      "var_explained_a": 0.9012941718101501,
+      "var_explained_b": 0.865633487701416,
+      "observed_residual": 0.8100357055664062,
+      "permutation_null_mean": 0.9453272302746772,
+      "permutation_null_std": 0.005653133014120615,
+      "permutation_null_p1": 0.9301413863897323,
+      "permutation_null_p5": 0.9346492558717727,
+      "rotation_null_mean": 1.053484493659327,
+      "rotation_null_std": 0.014998653623328372,
+      "z_vs_permutation": -23.932131858623276,
+      "below_p1_permutation": true
+    },
+    "0.75": {
+      "k": 25,
+      "var_explained_a": 0.8917529582977295,
+      "var_explained_b": 0.9007641077041626,
+      "observed_residual": 0.8050259351730347,
+      "permutation_null_mean": 0.9530936333537102,
+      "permutation_null_std": 0.006321803273038466,
+      "permutation_null_p1": 0.9369033342599868,
+      "permutation_null_p5": 0.9414042323827744,
+      "rotation_null_mean": 1.0605293450907698,
+      "rotation_null_std": 0.017099024328129812,
+      "z_vs_permutation": -23.42175037495423,
+      "below_p1_permutation": true
+    }
+  }
+}

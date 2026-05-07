@@ -1,0 +1,117 @@
+\section{Methods}
+\label{sec:methods}
+
+\subsection{The COSI Hypothesis}
+
+Let $M_A, M_B$ be two transformer language models with hidden sizes
+$d_A, d_B$ and layer counts $L_A, L_B$. For a prompt $x_i$ from a probe set
+$X = \{x_1, \ldots, x_N\}$, let $a_A^{(\ell)}(x_i) \in \R^{d_A}$ denote the
+residual stream activation at layer $\ell$ of $M_A$, pooled over the
+sequence dimension to a single vector. Let $X_A^{(\ell)} \in \R^{N \times d_A}$
+denote the matrix of pooled activations across all $N$ probes at layer
+$\ell$, and analogously for $X_B^{(\ell')}$.
+
+The COSI hypothesis is the following.
+
+\begin{definition}[Approximate invariant subspace]
+A $k$-dimensional subspace $V \subseteq \R^d$ is \emph{approximately
+$\epsilon$-invariant} under a (possibly nonlinear) map $f: \R^d \to \R^d$ on a
+sample $X$ if
+$\fnorm{(I - P_V) f(P_V X)} / \fnorm{f(P_V X)} \leq \epsilon$,
+where $P_V$ is the orthogonal projection onto $V$.
+\end{definition}
+
+\begin{proposition}[COSI hypothesis]
+\label{prop:cosi}
+For two transformer language models $M_A$ and $M_B$ that have learned
+compositional reasoning, there exist layer indices $\ell_A, \ell_B$,
+subspace dimension $k$, and approximately $\epsilon$-invariant subspaces
+$V_A \subseteq \R^{d_A}$ and $V_B \subseteq \R^{d_B}$ of their respective
+forward operators, such that the projected activation matrices
+$P_{V_A} X_A^{(\ell_A)}$ and $P_{V_B} X_B^{(\ell_B)}$ admit an orthogonal
+alignment with Procrustes residual significantly below the chance level
+defined by permutation null.
+\end{proposition}
+
+This is a falsifiable empirical claim. The remainder of this section
+specifies the protocol that operationalizes it.
+
+\subsection{Activation Extraction}
+
+For each model, we replicate the inner forward pass of the architecture
+exactly as implemented in MLX, capturing the residual stream
+$h^{(\ell)}(x)$ after each layer block at a set of pre-registered layer
+fractions $f \in \{0.25, 0.5, 0.75\}$, mapping to layer indices
+$\ell = \max(0, \lfloor f \cdot L \rceil - 1)$. Pooling over the sequence
+dimension is performed as last-token (the position immediately preceding
+the model's would-be next token), with mean and max pooling reserved as
+ablations. Activations are cast from \texttt{bfloat16} to \texttt{float32}
+before crossing to host memory. We do not modify the model implementations;
+the extraction is a parallel forward pass that uses the same submodules
+(embeddings, layers, masks) as the published \texttt{mlx\_lm} forward pass.
+
+\subsection{Subspace Projection}
+
+We project each model's activation matrix onto its top-$k$ principal
+components, where $k$ is chosen as $\min(k_A^*, k_B^*)$ with $k_M^*$ the
+smallest dimension at which model $M$'s cumulative explained variance
+exceeds $0.90$. This ensures both projections retain comparable
+information content and that the alignment is performed in matched
+dimensions. PCA is computed by truncated SVD on the column-centered
+activation matrix.
+
+\subsection{Procrustes Alignment}
+
+In the shared $k$-dimensional subspace, we compute the orthogonal
+transformation $R \in O(k)$ that minimizes $\fnorm{X_A - X_B R}$, using
+the standard SVD-based solution \cite{schonemann1966generalized}:
+$R = U V^\top$, where $U \Sigma V^\top$ is the SVD of $X_B^\top X_A$.
+The \emph{Procrustes residual} is
+\begin{equation}
+\rho(X_A, X_B) = \frac{\fnorm{X_A - X_B R^*}}{\fnorm{X_A}},
+\label{eq:procrustes-residual}
+\end{equation}
+which lies in $[0, \sqrt{2}]$ and equals $0$ for perfect orthogonal
+alignment.
+
+\subsection{Null Distributions}
+
+We define two null distributions, both essential.
+
+\textbf{Permutation null.} For each of $S$ random permutations
+$\pi: \{1, \ldots, N\} \to \{1, \ldots, N\}$, we recompute the Procrustes
+residual on $X_A$ and $X_B^{(\pi)}$, where $X_B^{(\pi)}$ has its rows
+permuted according to $\pi$. This breaks the semantic correspondence
+between rows while preserving each model's internal representational
+geometry. The distribution of residuals over $S$ permutations defines
+the chance level for ``no semantic alignment.'' We use $S = 1000$.
+
+\textbf{Random-rotation null.} For each of $S$ random orthogonal matrices
+$R_{\text{rand}} \in O(k)$ (sampled uniformly via QR decomposition of a
+Gaussian matrix, with sign correction \cite{mezzadri2007generate}), we
+compute $\fnorm{X_A - X_B R_{\text{rand}}} / \fnorm{X_A}$. This is a
+weaker null---it does not optimize over $R$---and is included for
+completeness rather than as the primary test.
+
+\subsection{Significance Criterion}
+
+The pre-registered significance criterion, declared before observing
+data, is the conjunction:
+\begin{enumerate}
+    \item the observed Procrustes residual is below the first percentile
+        of the permutation null distribution;
+    \item the standardized z-score of the observed residual against the
+        permutation null mean is at most $-2$.
+\end{enumerate}
+A run that fails either condition is reported as a null result.
+
+\subsection{Ablations and Sensitivity Sweeps}
+
+Three sensitivity sweeps are part of the registered protocol but reserved
+for Phase~1 due to compute cost: (i) pooling mode (last-token, mean, max);
+(ii) layer fraction sweep across the full layer stack rather than three
+fixed fractions; (iii) variance threshold for PCA dimensionality
+($0.85$, $0.90$, $0.95$). We additionally compute centered kernel alignment
+(CKA) \cite{kornblith2019similarity} as a cross-validation metric.
+Discrepancies between Procrustes and CKA verdicts will be reported as
+informative findings rather than treated as failures of either method.
