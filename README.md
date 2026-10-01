@@ -2,9 +2,15 @@
 
 This is the public reproducibility repository for the paper:
 
-> **Cross-Architectural Activation Alignment in Frontier Language Models:
-> A Representational-Geometry Pilot, with an Operator-Theoretic Program It Motivates.**
-> Adam A. Bensaid (Atlas Consulting & Technology Services) and Claude (Anthropic). 2026.
+> **Row-Permutation Nulls Are Not Enough:
+> Lexical and Grouped Controls for Cross-Model Activation Alignment.**
+> Adam A. Bensaid (Atlas Consulting & Technology Services). 2026.
+
+Code, the experimental harness and first drafts of the text were produced with the
+assistance of AI models (Anthropic's Claude); the design and result notes under
+`docs/research_notes/` are credited to the assistant that drafted them. The author set
+the questions, chose the controls, checked the results and rewrote the paper. See the
+paper's Acknowledgments.
 
 ---
 
@@ -128,13 +134,13 @@ Paper source: CC-BY 4.0.
 ## Citation
 
 ```bibtex
-@article{bensaid2026cosi,
-  author  = {Bensaid, Adam A. and {Claude} (Anthropic)},
-  title   = {Cross-Architectural Activation Alignment in Frontier Language Models:
-             A Representational-Geometry Pilot, with an Operator-Theoretic Program It Motivates},
-  year    = {2026},
-  journal = {arXiv preprint},
-  note    = {arXiv:[TO BE FILLED]}
+@misc{bensaid2026rowpermutation,
+  author       = {Bensaid, Adam A.},
+  title        = {Row-Permutation Nulls Are Not Enough:
+                  Lexical and Grouped Controls for Cross-Model Activation Alignment},
+  year         = {2026},
+  howpublished = {Independent working paper, https://github.com/ascendanti/cosi-pilot},
+  note         = {Not peer reviewed}
 }
 ```
 
